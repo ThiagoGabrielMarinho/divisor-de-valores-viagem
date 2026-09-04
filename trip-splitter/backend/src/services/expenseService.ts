@@ -1,5 +1,7 @@
 import { randomUUID } from "crypto";
-import { db } from "../db/schema";
+import { desc, eq } from "drizzle-orm";
+import { db } from "../db";
+import { expenses, expenseShares, participants } from "../db/schema";
 import { Expense, ValidationError } from "../types";
 import { getTrip } from "./tripService";
 
@@ -24,8 +26,8 @@ export function splitEqually(amountCents: number, splitAmong: string[]): Map<str
 }
 
 // R3 + R8: registrar despesa com validação
-export function addExpense(tripId: string, input: AddExpenseInput): Expense {
-  getTrip(tripId);
+export async function addExpense(tripId: string, input: AddExpenseInput): Promise<Expense> {
+  await getTrip(tripId);
 
   const description = (input.description || "").trim();
   if (!description) throw new ValidationError("Descrição é obrigatória.");
@@ -39,11 +41,11 @@ export function addExpense(tripId: string, input: AddExpenseInput): Expense {
     throw new ValidationError("Selecione ao menos um participante para dividir a despesa.");
   }
 
-  const participantIds = new Set(
-    (db.prepare("SELECT id FROM participants WHERE trip_id = ?").all(tripId) as unknown as { id: string }[]).map(
-      (p) => p.id
-    )
-  );
+  const tripParticipants = await db
+    .select({ id: participants.id })
+    .from(participants)
+    .where(eq(participants.trip_id, tripId));
+  const participantIds = new Set(tripParticipants.map((p) => p.id));
 
   if (!participantIds.has(input.paidBy)) {
     throw new ValidationError("Quem pagou precisa ser um participante da viagem.");
@@ -69,50 +71,58 @@ export function addExpense(tripId: string, input: AddExpenseInput): Expense {
     })),
   };
 
-  const insertExpense = db.prepare(
-    "INSERT INTO expenses (id, trip_id, description, amount_cents, paid_by, created_at) VALUES (?, ?, ?, ?, ?, ?)"
-  );
-  const insertShare = db.prepare(
-    "INSERT INTO expense_shares (expense_id, participant_id, share_cents) VALUES (?, ?, ?)"
-  );
+  // Insere despesa + rateios numa transação (tudo ou nada)
+  await db.transaction(async (tx) => {
+    await tx.insert(expenses).values({
+      id: expense.id,
+      trip_id: expense.trip_id,
+      description: expense.description,
+      amount_cents: expense.amount_cents,
+      paid_by: expense.paid_by,
+      created_at: expense.created_at,
+    });
 
-  // node:sqlite não tem helper .transaction() como better-sqlite3; controlamos manualmente
-  db.exec("BEGIN");
-  try {
-    insertExpense.run(
-      expense.id,
-      expense.trip_id,
-      expense.description,
-      expense.amount_cents,
-      expense.paid_by,
-      expense.created_at
+    await tx.insert(expenseShares).values(
+      expense.shares.map((s) => ({
+        expense_id: expense.id,
+        participant_id: s.participant_id,
+        share_cents: s.share_cents,
+      }))
     );
-    for (const s of expense.shares) {
-      insertShare.run(expense.id, s.participant_id, s.share_cents);
-    }
-    db.exec("COMMIT");
-  } catch (err) {
-    db.exec("ROLLBACK");
-    throw err;
-  }
+  });
 
   return expense;
 }
 
 // R7: listar despesas, mais recentes primeiro
-export function listExpenses(tripId: string): Expense[] {
-  getTrip(tripId);
+export async function listExpenses(tripId: string): Promise<Expense[]> {
+  await getTrip(tripId);
 
-  const rows = db
-    .prepare("SELECT * FROM expenses WHERE trip_id = ? ORDER BY created_at DESC")
-    .all(tripId) as unknown as Omit<Expense, "shares">[];
+  const expenseRows = await db
+    .select()
+    .from(expenses)
+    .where(eq(expenses.trip_id, tripId))
+    .orderBy(desc(expenses.created_at)); // mais recentes primeiro
 
-  const shareStmt = db.prepare(
-    "SELECT participant_id, share_cents FROM expense_shares WHERE expense_id = ?"
-  );
+  const shareRows = await db
+    .select({
+      expense_id: expenseShares.expense_id,
+      participant_id: expenseShares.participant_id,
+      share_cents: expenseShares.share_cents,
+    })
+    .from(expenseShares)
+    .innerJoin(expenses, eq(expenses.id, expenseShares.expense_id))
+    .where(eq(expenses.trip_id, tripId));
 
-  return rows.map((row) => ({
+  const sharesByExpense = new Map<string, Expense["shares"]>();
+  for (const row of shareRows) {
+    const list = sharesByExpense.get(row.expense_id) || [];
+    list.push({ participant_id: row.participant_id, share_cents: row.share_cents });
+    sharesByExpense.set(row.expense_id, list);
+  }
+
+  return expenseRows.map((row) => ({
     ...row,
-    shares: shareStmt.all(row.id) as unknown as Expense["shares"],
+    shares: sharesByExpense.get(row.id) || [],
   }));
 }

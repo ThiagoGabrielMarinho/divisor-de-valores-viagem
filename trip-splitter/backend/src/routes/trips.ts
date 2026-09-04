@@ -6,19 +6,19 @@ import * as balanceService from "../services/balanceService";
 export const router = Router();
 
 // R1
-router.post("/trips", (req: Request, res: Response, next: NextFunction) => {
+router.post("/trips", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const trip = tripService.createTrip(req.body?.name);
+    const trip = await tripService.createTrip(req.body?.name);
     res.status(201).json(trip);
   } catch (e) {
     next(e);
   }
 });
 
-router.get("/trips/:tripId", (req: Request, res: Response, next: NextFunction) => {
+router.get("/trips/:tripId", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const trip = tripService.getTrip(req.params.tripId);
-    const participants = tripService.listParticipants(req.params.tripId);
+    const trip = await tripService.getTrip(req.params.tripId);
+    const participants = await tripService.listParticipants(req.params.tripId);
     res.json({ ...trip, participants });
   } catch (e) {
     next(e);
@@ -28,9 +28,9 @@ router.get("/trips/:tripId", (req: Request, res: Response, next: NextFunction) =
 // R2
 router.post(
   "/trips/:tripId/participants",
-  (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const participant = tripService.addParticipant(req.params.tripId, req.body?.name);
+      const participant = await tripService.addParticipant(req.params.tripId, req.body?.name);
       res.status(201).json(participant);
     } catch (e) {
       next(e);
@@ -41,9 +41,9 @@ router.post(
 // R3, R8
 router.post(
   "/trips/:tripId/expenses",
-  (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const expense = expenseService.addExpense(req.params.tripId, {
+      const expense = await expenseService.addExpense(req.params.tripId, {
         description: req.body?.description,
         amountCents: req.body?.amountCents,
         paidBy: req.body?.paidBy,
@@ -59,9 +59,9 @@ router.post(
 // R7
 router.get(
   "/trips/:tripId/expenses",
-  (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
-      res.json(expenseService.listExpenses(req.params.tripId));
+      res.json(await expenseService.listExpenses(req.params.tripId));
     } catch (e) {
       next(e);
     }
@@ -71,9 +71,9 @@ router.get(
 // R5
 router.get(
   "/trips/:tripId/balances",
-  (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
-      res.json(balanceService.getBalances(req.params.tripId));
+      res.json(await balanceService.getBalances(req.params.tripId));
     } catch (e) {
       next(e);
     }
@@ -83,9 +83,9 @@ router.get(
 // R6
 router.get(
   "/trips/:tripId/settlements",
-  (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
-      res.json(balanceService.getSettlements(req.params.tripId));
+      res.json(await balanceService.getSettlements(req.params.tripId));
     } catch (e) {
       next(e);
     }

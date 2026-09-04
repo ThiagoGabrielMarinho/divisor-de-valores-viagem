@@ -1,28 +1,32 @@
-import { db } from "../db/schema";
-import { Balance, Settlement, Participant } from "../types";
+import { eq, sql } from "drizzle-orm";
+import { db } from "../db";
+import { expenses, expenseShares } from "../db/schema";
+import { Balance, Settlement } from "../types";
 import { getTrip, listParticipants } from "./tripService";
 
 // R5: saldo = total pago - total consumido. Soma de todos os saldos = 0.
-export function getBalances(tripId: string): Balance[] {
-  getTrip(tripId);
-  const participants = listParticipants(tripId);
+export async function getBalances(tripId: string): Promise<Balance[]> {
+  await getTrip(tripId);
+  const participants = await listParticipants(tripId);
 
-  const paidRows = db
-    .prepare(
-      `SELECT paid_by as participant_id, SUM(amount_cents) as total
-       FROM expenses WHERE trip_id = ? GROUP BY paid_by`
-    )
-    .all(tripId) as unknown as { participant_id: string; total: number }[];
+  const paidRows = await db
+    .select({
+      participant_id: expenses.paid_by,
+      total: sql<number>`sum(${expenses.amount_cents})`.mapWith(Number),
+    })
+    .from(expenses)
+    .where(eq(expenses.trip_id, tripId))
+    .groupBy(expenses.paid_by);
 
-  const consumedRows = db
-    .prepare(
-      `SELECT es.participant_id as participant_id, SUM(es.share_cents) as total
-       FROM expense_shares es
-       JOIN expenses e ON e.id = es.expense_id
-       WHERE e.trip_id = ?
-       GROUP BY es.participant_id`
-    )
-    .all(tripId) as unknown as { participant_id: string; total: number }[];
+  const consumedRows = await db
+    .select({
+      participant_id: expenseShares.participant_id,
+      total: sql<number>`sum(${expenseShares.share_cents})`.mapWith(Number),
+    })
+    .from(expenseShares)
+    .innerJoin(expenses, eq(expenses.id, expenseShares.expense_id))
+    .where(eq(expenses.trip_id, tripId))
+    .groupBy(expenseShares.participant_id);
 
   const paidMap = new Map(paidRows.map((r) => [r.participant_id, r.total]));
   const consumedMap = new Map(consumedRows.map((r) => [r.participant_id, r.total]));
@@ -35,8 +39,8 @@ export function getBalances(tripId: string): Balance[] {
 }
 
 // R6: algoritmo guloso de min-cash-flow (maior credor recebe do maior devedor)
-export function getSettlements(tripId: string): Settlement[] {
-  const balances = getBalances(tripId).map((b) => ({ ...b }));
+export async function getSettlements(tripId: string): Promise<Settlement[]> {
+  const balances = (await getBalances(tripId)).map((b) => ({ ...b }));
   const nameOf = new Map(balances.map((b) => [b.participant_id, b.name]));
 
   const creditors = balances

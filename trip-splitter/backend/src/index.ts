@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import path from "path";
 import { router } from "./routes/trips";
+import { runMigrations } from "./db/migrate";
 
 const app = express();
 app.use(cors());
@@ -25,6 +26,15 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Trip Splitter rodando em http://localhost:${PORT}`);
-});
+
+// Garante que as tabelas existem antes de aceitar tráfego (idempotente).
+runMigrations()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Trip Splitter rodando em http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Falha ao migrar o banco de dados:", err);
+    process.exit(1);
+  });

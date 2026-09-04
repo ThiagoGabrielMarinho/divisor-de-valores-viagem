@@ -7,18 +7,33 @@ Construído seguindo metodologia **spec-driven** (Specify → Design → Tasks �
 - `design.md` — modelos de dados, componentes e algoritmos
 - `tasks.md` — tarefas atômicas, cada uma = 1 commit (veja `git log`)
 
-## Como rodar
+## Como rodar localmente
 
-Requer **Node.js 22.13+** (usa o módulo `node:sqlite`, nativo do Node — sem dependências que precisem compilar, então não precisa de Visual Studio/build tools no Windows nem de Xcode no Mac). Rode `node -v` pra conferir a sua versão; se estiver abaixo de 22.13, atualize em https://nodejs.org.
+Requer **Node.js 18+** e um Postgres acessível (local via Docker, ou um banco gerenciado como o do Render/Neon/Supabase).
 
 ```bash
-npm run install:all   # instala as dependências do backend
-npm start              # builda e sobe o servidor em http://localhost:3000
+npm run install:all         # instala as dependências do backend
+cp backend/.env.example backend/.env
+# edite backend/.env e preencha DATABASE_URL com a connection string do seu Postgres
+npm start                    # builda, aplica as tabelas (migração idempotente) e sobe o servidor em http://localhost:3000
 ```
 
 O frontend é servido pelo próprio backend — não precisa de um segundo processo.
 
+Não há um passo manual separado de "criar as tabelas": o servidor roda `db/migrate.ts` (CREATE TABLE IF NOT EXISTS) automaticamente antes de aceitar tráfego. Se preferir aplicar manualmente, `npm run db:migrate`.
+
+## Deploy no Render
+
+1. Crie um Postgres no Render e copie a connection string (Internal Database URL, se o Web Service estiver na mesma região).
+2. Crie o Web Service apontando para este repo, com:
+   - Build Command: `npm run install:all && npm run build`
+   - Start Command: `cd backend && npm start`
+3. Em Environment, defina `DATABASE_URL` com a string do passo 1.
+4. No primeiro boot, o servidor já cria as tabelas automaticamente.
+
 ## Como rodar os testes
+
+Os testes rodam contra o Postgres apontado por `DATABASE_URL` (mesmo `.env` do passo acima) — cada teste cria sua própria viagem com ID aleatório, então é seguro rodar contra um banco já em uso.
 
 ```bash
 npm test
@@ -36,7 +51,7 @@ Cobre os requisitos R2, R4, R5, R6 e R8 (matriz de cobertura em `design.md`).
 
 ## Stack
 
-- Backend: Node.js + TypeScript + Express + SQLite (`better-sqlite3`)
+- Backend: Node.js + TypeScript + Express + PostgreSQL (via `drizzle-orm` + `pg`)
 - Frontend: HTML/CSS/JS estático, sem build tool
 - Testes: `node:test` (nativo do Node)
 
