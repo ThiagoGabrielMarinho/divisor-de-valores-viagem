@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rachadinha — divisor de contas de viagem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <span class="stamp">✈</span>
+  <h1>Rachadinha</h1>
+  <p class="tagline">quem pagou, quem deve, quanto — sem drama</p>
+</header>
+
+<main id="app">
+
+  <!-- Tela 1: criar ou abrir viagem -->
+  <section id="screen-start" class="screen">
+    <div class="card">
+      <h2>Nova viagem</h2>
+      <form id="form-new-trip">
+        <label for="trip-name">Nome da viagem</label>
+        <input id="trip-name" type="text" placeholder="Ex: Chapada Diamantina 2026" required />
+        <button type="submit">Criar viagem</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Já tenho o código</h2>
+      <form id="form-open-trip">
+        <label for="trip-id">Código da viagem</label>
+        <input id="trip-id" type="text" placeholder="cole o ID aqui" required />
+        <button type="submit" class="secondary">Abrir viagem</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Tela 2: viagem -->
+  <section id="screen-trip" class="screen hidden">
+    <div class="trip-header">
+      <div>
+        <h2 id="trip-name-display"></h2>
+        <p class="trip-id-note">código da viagem: <code id="trip-id-display"></code> <button id="copy-id" class="linklike">copiar</button></p>
+      </div>
+      <button id="btn-back" class="linklike">← trocar de viagem</button>
+    </div>
+
+    <div class="grid">
+      <!-- Participantes -->
+      <div class="card">
+        <h3>Participantes</h3>
+        <ul id="participants-list" class="chips"></ul>
+        <form id="form-add-participant" class="inline-form">
+          <input id="participant-name" type="text" placeholder="Nome" required />
+          <button type="submit">Adicionar</button>
+        </form>
+      </div>
+
+      <!-- Nova despesa -->
+      <div class="card">
+        <h3>Registrar despesa</h3>
+        <form id="form-add-expense">
+          <label for="expense-desc">Descrição</label>
+          <input id="expense-desc" type="text" placeholder="Ex: Jantar dia 12" required />
+
+          <label for="expense-amount">Valor (R$)</label>
+          <input id="expense-amount" type="number" step="0.01" min="0.01" placeholder="0,00" required />
+
+          <label for="expense-payer">Quem pagou</label>
+          <select id="expense-payer" required></select>
+
+          <label>Dividir entre</label>
+          <div id="expense-split-checkboxes" class="checkbox-list"></div>
+
+          <button type="submit">Adicionar despesa</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Despesas -->
+      <div class="card ledger">
+        <h3>Despesas</h3>
+        <table id="expenses-table">
+          <thead>
+            <tr><th>Data</th><th>Descrição</th><th>Pago por</th><th class="num">Valor</th></tr>
+          </thead>
+          <tbody id="expenses-tbody"></tbody>
+        </table>
+        <p id="expenses-empty" class="empty-note hidden">Nenhuma despesa ainda. Registre a primeira ao lado.</p>
+      </div>
+
+      <!-- Saldos -->
+      <div class="card">
+        <h3>Saldos</h3>
+        <ul id="balances-list" class="balances"></ul>
+      </div>
+    </div>
+
+    <div class="card settlements-card">
+      <h3>Quitação — quem paga quem</h3>
+      <ul id="settlements-list" class="settlements"></ul>
+      <p id="settlements-empty" class="empty-note hidden">Tudo quitado. Ninguém deve nada a ninguém. 🎉</p>
+    </div>
+  </section>
+
+</main>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

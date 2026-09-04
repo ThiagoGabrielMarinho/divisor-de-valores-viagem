@@ -1,0 +1,10 @@
+{
+  "name": "trip-splitter",
+  "private": true,
+  "scripts": {
+    "install:all": "cd backend && npm install",
+    "build": "cd backend && npm run build",
+    "test": "cd backend && npm run build && node --test dist/tests/*.test.js",
+    "start": "cd backend && npm run build && npm start"
+  }
+}
