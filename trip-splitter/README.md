@@ -2,10 +2,11 @@
 
 MVP de app web para grupos dividirem gastos de viagem e descobrirem a forma mais simples de quitar as dívidas entre si. Moeda única (BRL), sem autenticação.
 
-Construído seguindo metodologia **spec-driven** (Specify → Design → Tasks → Execute) — veja os documentos em `.specs/features/split-de-contas/`:
-- `spec.md` — requisitos testáveis (R1-R9) e o que está fora de escopo
+Construído seguindo metodologia **spec-driven** (Specify → Design → Tasks → Execute), usando a skill `tlc-spec-driven` (`.claude/skills/tlc-spec-driven/`) — veja os documentos em `.specs/features/split-de-contas/`:
+- `spec.md` — requisitos testáveis (TRIP-01 a TRIP-09, notação EARS) e o que está fora de escopo
 - `design.md` — modelos de dados, componentes e algoritmos
-- `tasks.md` — tarefas atômicas, cada uma = 1 commit (veja `git log`)
+- `tasks.md` — tarefas atômicas por fase, cada uma = 1 commit (veja `git log`)
+- `validation.md` — relatório do Verifier independente (evidência `file:line` + resultado da suíte de testes)
 
 ## Como rodar localmente
 
@@ -39,7 +40,7 @@ Os testes rodam contra o Postgres apontado por `DATABASE_URL` (mesmo `.env` do p
 npm test
 ```
 
-Cobre os requisitos R2, R4, R5, R6 e R8 (matriz de cobertura em `design.md`).
+Cobre os requisitos TRIP-02, TRIP-04, TRIP-05, TRIP-06 e TRIP-08 (matriz de cobertura completa em `.specs/features/split-de-contas/tasks.md`).
 
 ## Como usar
 
