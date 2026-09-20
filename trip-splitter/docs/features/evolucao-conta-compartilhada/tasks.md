@@ -65,7 +65,7 @@ T9 -> T10 -> T11 -> T12
 
 ### T1: Criar store simulado no navegador
 
-**Status**: Proposed
+**Status**: Done
 **What**: Implementar o estado simulado (usuários, sessão, viagens, membros, despesas, obrigações) com leitura/escrita no navegador e indicação clara de reinício.
 **Where**: `frontend/prototype/store.js`
 **Depends on**: None

@@ -17,6 +17,14 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — PROTO T1: store simulado do protótipo
+
+- **O que mudou:** criado o store simulado do protótipo em `frontend/prototype/store.js`, com estado em memória espelhado em `localStorage`, entidades (users, session, trips, memberships, expenses, obligations), geração de IDs, update/persist e sinal de reinício de estado.
+- **Por quê:** dar base de dados simulada ao protótipo frontend-only, sem backend.
+- **Arquivos:** `frontend/prototype/store.js`, `docs/features/evolucao-conta-compartilhada/tasks.md`.
+- **Gate:** `node --check` verde; checagem manual em Node confirmou estado vazio, IDs únicos, update, clearAll e sinal de reset.
+- **Commit:** `feat(frontend): add simulated in-browser store`.
+
 ### 2026-09-20 — T5: gate honesto e pasta do protótipo
 
 - **O que mudou:** o `tasks.md` da feature passou a construir o protótipo em `frontend/prototype/` (separado do `frontend/app.js` legado, que ainda fala com o backend) e trocou o gate de `npm run build` por `node --check` do JS do protótipo mais UAT, porque o build atual compila o backend e não valida o frontend.
