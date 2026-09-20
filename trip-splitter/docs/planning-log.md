@@ -17,6 +17,13 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — T5: gate honesto e pasta do protótipo
+
+- **O que mudou:** o `tasks.md` da feature passou a construir o protótipo em `frontend/prototype/` (separado do `frontend/app.js` legado, que ainda fala com o backend) e trocou o gate de `npm run build` por `node --check` do JS do protótipo mais UAT, porque o build atual compila o backend e não valida o frontend.
+- **Por quê:** o gate anterior não verificava o protótipo; o novo é honesto para código frontend estático e não quebra o app legado.
+- **Arquivos:** `docs/features/evolucao-conta-compartilhada/tasks.md`, `docs/planning-log.md`, `docs/tasks.md`.
+- **Commit:** `docs(planning): use honest frontend gate for prototype`.
+
 ### 2026-09-20 — T4: criação deste changelog
 
 - **O que mudou:** criado o registro contínuo de documentação e planejamento.

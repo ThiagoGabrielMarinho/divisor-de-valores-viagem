@@ -53,3 +53,16 @@ Este arquivo mantém o histórico das unidades de trabalho documentais do projet
 **Done when**: o log existe, explica seu propósito e registra as entradas de planejamento já realizadas (T1, T2, T3) com data, escopo e commit.
 **Commit**: `docs(process): add planning changelog`
 **Commit status**: Created in this commit
+
+## T5: Definir gate honesto e pasta isolada do protótipo
+
+**Status**: Done
+**What**: Ajustar o tasks.md da feature para construir o protótipo em `frontend/prototype/` e usar `node --check` + UAT como gate, sem quebrar o `frontend/app.js` legado.
+**Where**: `docs/features/evolucao-conta-compartilhada/tasks.md`
+**Depends on**: T4
+**Requirement**: Gate verificável para código frontend do protótipo
+**Tests**: `python .kiro/scripts/validate_tasks.py docs/features/evolucao-conta-compartilhada/tasks.md --root .` e `git diff --check`
+**Gate**: `python .kiro/scripts/validate_tasks.py docs/features/evolucao-conta-compartilhada/tasks.md --root .`
+**Done when**: cada task PROTO aponta para `frontend/prototype/` e usa um gate que realmente verifica o artefato, sem alterar backend.
+**Commit**: `docs(planning): use honest frontend gate for prototype`
+**Commit status**: Created in this commit
