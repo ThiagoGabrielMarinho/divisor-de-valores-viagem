@@ -27,3 +27,16 @@ Este arquivo mantém o histórico das unidades de trabalho documentais do projet
 **Done when**: spec, contexto de Discuss, design e tasks persistentes existem; decisões críticas estão explícitas como confirmadas ou bloqueadoras; cada task tem dependências, testes, gate, Done when e commit planejado.
 **Commit**: `docs(planning): define shared account evolution tasks`
 **Commit status**: Created in this commit
+
+## T3: Refinar evolução para escopo frontend-only com decisões confirmadas
+
+**Status**: Done
+**What**: Atualizar spec, contexto, design e tasks da feature para um protótipo somente frontend, com login/cadastro simulados, papéis owner/member, confirmação de pagamento pelo recebedor, prazo por obrigação definido por quem recebe, reset que apaga mas é bloqueado após pagamentos e resumo global com netting.
+**Where**: `docs/features/evolucao-conta-compartilhada/`
+**Depends on**: T2
+**Requirement**: Fechamento das decisões de Discuss e redução de escopo para frontend
+**Tests**: validadores estruturais de spec/tasks e revisão das decisões confirmadas
+**Gate**: `python .kiro/scripts/validate_spec.py docs/features/evolucao-conta-compartilhada/spec.md --root .` + `python .kiro/scripts/validate_tasks.py docs/features/evolucao-conta-compartilhada/tasks.md --root .`
+**Done when**: os artefatos refletem escopo frontend-only, decisões confirmadas sem default silencioso e tasks tocando apenas `frontend/`, cada uma com testes, gate, Done when e commit planejado.
+**Commit**: `docs(planning): scope shared account prototype to frontend`
+**Commit status**: Created in this commit

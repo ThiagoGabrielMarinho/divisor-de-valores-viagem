@@ -1,213 +1,252 @@
-# Evolução de conta compartilhada, quitação e experiência
+# Protótipo frontend de conta compartilhada
 
-**Status:** Draft — aguardando Discuss e confirmação do usuário  
+**Status:** Draft — escopo somente frontend, decisões confirmadas
 **Feature path:** `docs/features/evolucao-conta-compartilhada/`  
-**Prioridade:** Large/Complex
+**Prioridade:** Large (frontend-only)
 
 ## Problem Statement
 
-O MVP atual usa o UUID da viagem como acesso, calcula despesas e quitações somente em memória e apresenta estados incorretos ou pouco confiáveis na interface. O grupo precisa de identidade, acesso controlado às viagens, uma visão consolidada de dívidas, confirmação de pagamentos, prazos, reset seguro e uma experiência visual mais clara.
+O produto ainda não tem backend nem banco de dados. Antes de investir em servidor, o grupo quer validar no navegador a experiência completa: cadastro e login simulados, viagens com papéis, despesas com estados verdadeiros, pagamentos confirmados, prazos, reset e uma visão inicial de quanto se deve a cada pessoa. Esta feature entrega esse protótipo apenas no frontend.
 
-Esta feature agrupa a próxima evolução funcional do Trip Splitter. Ela não deve ser implementada até que as decisões de autenticação, autorização, identidade global, estados financeiros e reset sejam fechadas em Discuss.
+Tudo é simulado no navegador. Não há autenticação real, persistência de servidor ou API. O objetivo é o fluxo, a clareza e a confiança visual.
 
 ## Goals
 
-- Corrigir a renderização de despesas e quitações para refletir o payload e seus estados reais, sem mensagens vazias falsas.
-- Permitir que pessoas autenticadas vejam somente viagens das quais fazem parte, conforme o papel definido.
-- Disponibilizar uma visão inicial consolidada do que o usuário deve ou tem a receber entre suas viagens.
-- Representar a confirmação de pagamentos e seus efeitos na situação da quitação.
-- Permitir prazos de pagamento com estado visual de pendente, pago, atrasado ou outro estado definido em Discuss.
-- Oferecer reset de gastos com autorização, confirmação, atomicidade e sem apagar silenciosamente dados financeiros relevantes.
-- Modernizar o layout em modo claro, com UX clean, compreensível, responsiva e acessível.
+- Simular cadastro e login por email e senha no frontend, sem servidor.
+- Exibir despesas e quitações refletindo estados reais do estado simulado, sem mensagens vazias falsas.
+- Mostrar somente as viagens do usuário logado no protótipo, com papéis owner e member.
+- Permitir o fluxo de pagamento em duas etapas: o pagador declara que pagou e o recebedor confirma.
+- Mover o valor do saldo pendente para concluído somente após a confirmação do recebedor.
+- Permitir prazo por obrigação, definido por quem tem a receber.
+- Permitir reset que apaga os gastos, bloqueado quando já houve pagamento concluído.
+- Apresentar um resumo global com netting do quanto o usuário deve ou tem a receber por pessoa.
+- Entregar um visual clean, moderno, responsivo, acessível e em modo claro.
 
 ## Out of Scope
 
 | Feature | Reason |
 | --- | --- |
-| Múltiplas moedas e conversão cambial | O produto continua limitado a BRL nesta evolução. |
-| Pagamentos financeiros reais, PIX ou integração bancária | Confirmar pagamento é um registro do produto, não uma transação financeira externa. |
-| Notificações por email, push ou WhatsApp | Dependem de infraestrutura externa não existente no MVP. |
-| Aplicativo nativo mobile | A entrega continua sendo uma aplicação web responsiva. |
-| Sistema completo de recuperação de conta e suporte | Pode ser uma feature posterior, salvo decisão explícita em Discuss. |
-| Dashboard administrativo geral | A feature trata usuário, viagens e obrigações, não administração da plataforma. |
+| Backend, banco de dados ou API | Esta feature é exclusivamente frontend; nenhuma task altera servidor. |
+| Autenticação real, sessão de servidor, hash de senha, recuperação | Cadastro e login são simulação de interface. |
+| Persistência compartilhada entre dispositivos ou usuários reais | O estado vive apenas no navegador do protótipo. |
+| Pagamentos financeiros externos, PIX ou integração bancária | Confirmar pagamento é apenas um estado simulado. |
+| Notificações por email, push ou mensagem | Dependem de infraestrutura externa inexistente no protótipo. |
+| Múltiplas moedas | O protótipo continua em BRL. |
+| Migração de viagens antigas | Não existem dados antigos; não há backend nem banco. |
 
 ## Assumptions & Open Questions
 
-Cada item abaixo precisa ser confirmado em Discuss ou permanecer explicitamente como bloqueio. Nenhum default deve ser implementado silenciosamente.
+Todas as decisões abaixo foram confirmadas pelo usuário. Nenhuma exige backend.
 
 | Assumption / decision | Chosen default | Rationale | Confirmed? |
 | --- | --- | --- | --- |
-| Tipo de login | Pendente: recomendar email + senha com sessão segura | É compreensível e permite associação estável entre viagens, mas exige política de senha, sessão e recuperação. | n |
-| Conta sem email | Pendente: não permitir no primeiro corte | Evita identidade duplicada e recuperação indefinida. | n |
-| Papel na viagem | Pendente: owner e member | Reset e gestão de membros precisam de autorização distinta. | n |
-| Convite para viagem | Pendente: convite autenticado, com UUID apenas como mecanismo de convite temporário | Preserva compartilhamento sem manter o UUID como bypass permanente. | n |
-| Identidade de participante | Pendente: participante deve referenciar uma conta quando possível, com convidado explicitamente marcado | O resumo global não pode depender de nomes iguais. | n |
-| Estado de despesa | Pendente: active, cancelled e archived se reset criar ciclos | Evita apagar histórico e permite explicar o que compõe o saldo. | n |
-| Confirmação de pagamento | Pendente: obrigação persistida e confirmação idempotente pelo papel definido | A quitação atual é apenas uma projeção; pagamento precisa de lifecycle. | n |
-| Prazo | Pendente: opcional por obrigação, armazenado em UTC e exibido no timezone do usuário | É o nível mais próximo da ação “pagar alguém”; precisa de regra para atraso. | n |
-| Reset | Pendente: owner inicia reset confirmado e o sistema cria novo ciclo, preservando histórico | DELETE irreversível poderia invalidar pagamentos e auditoria. | n |
-| Resumo global | Pendente: saldo líquido por par de contas, com drill-down por viagem | Evita mostrar A deve B e B deve A como duas cobranças quando podem ser compensadas. | n |
-| Pagamento confirmado | Pendente: confirmar não apaga a despesa; altera a obrigação e sua exibição | Histórico financeiro deve permanecer auditável. | n |
-| Layout | Confirmado pelo steering: modo claro, clean, responsivo e orientado a UX | É decisão permanente do produto. | y |
-| Persistência | Confirmado pelo produto atual: PostgreSQL via Drizzle e centavos inteiros | Mantém invariantes existentes. | y |
+| Escopo | Somente frontend; sem backend, banco ou API | O produto ainda não tem servidor e quer validar o fluxo primeiro. | y |
+| Login e cadastro | Simulados por email e senha no navegador | Valida a experiência sem construir autenticação real. | y |
+| Papéis | Owner e member por viagem | Owner cria e gerencia; member participa. | y |
+| Cadastro de pessoas | Pessoas podem se cadastrar na simulação | Permite montar o cenário de várias contas no protótipo. | y |
+| Fluxo de pagamento | Pagador declara que pagou e recebedor confirma | Espelha o combinado real do grupo. | y |
+| Efeito da confirmação | Move do saldo pendente para pagamento concluído | Deixa claro o que ainda falta e o que já foi quitado. | y |
+| Prazo | Por obrigação, definido por quem recebe | Quem espera o dinheiro define até quando. | y |
+| Reset | Apaga os gastos, mas é bloqueado se houver pagamento concluído | Evita apagar um histórico que já teve quitação. | y |
+| Resumo global | Consolidado por pessoa com netting | Mostra o valor líquido entre o usuário e cada pessoa. | y |
+| Visual | Modo claro, clean, responsivo e acessível | Decisão permanente do steering. | y |
+| Persistência do protótipo | Estado no navegador (memória e/ou localStorage) | Suficiente para demonstrar o fluxo sem servidor. | y |
 
-**Open questions:** tipo de autenticação, roles, convite, identidade global, lifecycle de despesa, regra de confirmação, prazo, reset e consolidação global permanecem abertos até Discuss.
+**Open questions:** none - all resolved or logged above.
 
 ## User Stories
 
-### P1: Estados financeiros verdadeiros
+### P1: Cadastro e login simulados
 
-**User Story**: Como participante, quero que despesas e quitações exibam o estado real retornado pelo sistema para não tomar decisões com base em mensagens falsas.
+**User Story**: Como pessoa do grupo, quero me cadastrar e entrar com email e senha na simulação para acessar minhas viagens no protótipo.
 
-**Why P1**: A interface atual contradiz dados financeiros e destrói confiança no produto.
-
-**Acceptance Criteria**:
-
-1. WHEN a API retorna uma lista de despesas não vazia THEN the system SHALL renderizar cada despesa recebida e SHALL ocultar a mensagem de lista vazia.
-2. WHEN a API retorna uma lista de despesas vazia THEN the system SHALL exibir a mensagem de nenhuma despesa e SHALL não manter linhas antigas na tabela.
-3. WHEN a API retorna quitações não vazias THEN the system SHALL renderizar cada quitação recebida e SHALL ocultar a mensagem de tudo quitado.
-4. WHEN a API retorna quitações vazias THEN the system SHALL exibir a mensagem de tudo quitado somente quando não houver obrigação pendente retornada.
-5. IF uma consulta de resumo falha THEN the system SHALL exibir um estado de erro ou indisponibilidade identificável e SHALL não apresentar dados vazios como se fossem verdadeiros.
-
-**Independent Test**: Mockar respostas com listas vazias, não vazias e erro e verificar DOM, mensagens e limpeza de estado anterior.
-
-### P1: Conta, login e acesso às viagens
-
-**User Story**: Como usuário, quero criar uma conta e entrar para ver somente as viagens às quais pertenço.
-
-**Why P1**: Identidade e autorização são pré-requisitos para resumo global, pagamentos e segurança.
+**Why P1**: Sem identidade simulada não há como demonstrar viagens por usuário nem o resumo global.
 
 **Acceptance Criteria**:
 
-1. WHEN uma pessoa envia credenciais válidas THEN the system SHALL criar ou iniciar uma sessão autenticada conforme o mecanismo aprovado em Discuss.
-2. IF as credenciais forem inválidas THEN the system SHALL rejeitar o login com status 401 e mensagem segura, sem revelar qual campo falhou.
-3. WHILE a pessoa estiver autenticada THEN the system SHALL permitir consultar somente viagens em que sua membership esteja autorizada.
-4. IF uma pessoa autenticada tentar acessar uma viagem sem membership THEN the system SHALL responder status 403 sem revelar dados da viagem.
-5. IF uma requisição protegida não possuir sessão válida THEN the system SHALL responder status 401 e a UI SHALL orientar o usuário a entrar.
-6. WHEN o usuário fizer logout THEN the system SHALL invalidar a sessão conforme a política definida e a UI SHALL voltar ao fluxo de login.
+1. WHEN a pessoa envia um cadastro simulado com email e senha válidos THEN the system SHALL registrar a conta no estado do navegador e SHALL habilitar o login com essas credenciais.
+2. WHEN a pessoa envia login com credenciais que existem no estado simulado THEN the system SHALL iniciar a sessão simulada e SHALL exibir a área autenticada.
+3. IF o login usar credenciais inexistentes no estado simulado THEN the system SHALL exibir uma mensagem de erro e SHALL permanecer na tela de login.
+4. WHEN a pessoa aciona sair THEN the system SHALL encerrar a sessão simulada e SHALL voltar para a tela de login.
+5. The system SHALL deixar explícito na interface que o cadastro e o login são uma simulação sem servidor.
 
-**Independent Test**: Criar dois usuários, associá-los a viagens diferentes e verificar login, logout, 401, 403 e isolamento de payloads.
+**Independent Test**: Cadastrar uma conta na simulação, sair, entrar com as mesmas credenciais, tentar credenciais erradas e verificar telas e mensagens.
 
-### P1: Resumo global de dívidas
+### P1: Viagens por usuário com papéis
 
-**User Story**: Como usuário autenticado, quero ver no início quanto devo ou tenho a receber de cada pessoa considerando minhas viagens autorizadas.
+**User Story**: Como usuário logado no protótipo, quero ver apenas as viagens das quais faço parte e saber se sou owner ou member.
 
-**Why P1**: O valor principal evolui de uma única viagem para a visão da conta do usuário.
-
-**Acceptance Criteria**:
-
-1. WHEN o usuário autenticado abrir a tela inicial THEN the system SHALL exibir o resumo agregado somente das viagens às quais ele tem acesso.
-2. WHEN obrigações entre o usuário e a mesma pessoa existirem em mais de uma viagem THEN the system SHALL consolidar os valores conforme a regra de netting aprovada.
-3. WHEN não houver obrigações pendentes THEN the system SHALL exibir um estado vazio verdadeiro e SHALL não afirmar que há dívidas.
-4. IF uma viagem não estiver autorizada ao usuário THEN the system SHALL excluir seus dados do resumo global.
-5. WHEN o usuário selecionar uma pessoa do resumo THEN the system SHALL exibir a origem por viagem, status e prazo conforme o contrato aprovado.
-
-**Independent Test**: Usar duas viagens com obrigações entre as mesmas contas e uma terceira viagem sem membership; verificar soma, exclusão e drill-down.
-
-### P1: Confirmação de pagamento e prazo
-
-**User Story**: Como usuário, quero confirmar ou acompanhar o pagamento de uma obrigação e ver seu prazo para saber o que está pendente.
-
-**Why P1**: Uma quitação sugerida não informa se o pagamento realmente aconteceu.
+**Why P1**: A visibilidade por usuário e o papel controlam o que aparece e quais ações existem.
 
 **Acceptance Criteria**:
 
-1. WHEN uma obrigação válida for criada THEN the system SHALL persistir seu estado inicial e seu valor em centavos.
-2. WHEN uma pessoa autorizada confirmar o pagamento THEN the system SHALL persistir a confirmação com autor e timestamp.
-3. WHEN a mesma confirmação idempotente for repetida THEN the system SHALL manter um único resultado sem duplicar o pagamento.
-4. IF uma pessoa sem permissão tentar confirmar ou alterar uma obrigação THEN the system SHALL responder status 403.
-5. WHEN uma obrigação possuir prazo THEN the system SHALL exibir seu status como pendente, pago ou atrasado conforme a data atual e a regra de timezone aprovada.
-6. IF uma confirmação entrar em conflito com o estado atual THEN the system SHALL rejeitar a transição com status 409 e SHALL manter o estado anterior.
+1. WHEN o usuário logado abre a lista de viagens THEN the system SHALL exibir somente as viagens em que ele participa no estado simulado.
+2. WHEN o usuário cria uma viagem THEN the system SHALL registrá-lo como owner dessa viagem.
+3. WHILE o usuário for member de uma viagem THEN the system SHALL ocultar ou desabilitar as ações exclusivas de owner nessa viagem.
+4. IF o usuário tentar abrir uma viagem da qual não participa THEN the system SHALL impedir o acesso e SHALL informar que a viagem não está disponível para ele.
 
-**Independent Test**: Criar obrigação, confirmar, repetir, tentar confirmar sem permissão e verificar vencimento com relógio controlado.
+**Independent Test**: Com duas contas simuladas, criar viagens distintas e confirmar visibilidade, papel e bloqueio de acesso cruzado.
 
-### P1: Reset seguro de gastos
+### P1: Estados verdadeiros de despesas e quitação
 
-**User Story**: Como responsável autorizado pela viagem, quero iniciar um novo ciclo de gastos sem apagar silenciosamente o histórico.
+**User Story**: Como participante, quero que despesas e quitações mostrem o estado real do protótipo para não ver mensagens falsas.
 
-**Why P1**: Reset é uma operação destrutiva e precisa preservar confiança e rastreabilidade.
+**Why P1**: A interface não pode dizer que está tudo quitado ou vazio quando há dados.
 
 **Acceptance Criteria**:
 
-1. WHEN o responsável iniciar um reset confirmado THEN the system SHALL executar a operação atômica conforme a semântica aprovada em Discuss.
-2. IF uma pessoa sem permissão tentar resetar a viagem THEN the system SHALL responder status 403 e SHALL não alterar dados.
-3. IF o reset falhar durante a operação THEN the system SHALL preservar o estado anterior por atomicidade.
-4. WHEN um reset for concluído THEN the system SHALL exibir claramente o novo ciclo e a forma de consultar o histórico preservado.
-5. WHEN pagamentos confirmados existirem THEN the system SHALL aplicar a regra aprovada para preservá-los, vinculá-los ou bloquear o reset.
+1. WHEN existir ao menos uma despesa na viagem THEN the system SHALL listar cada despesa e SHALL ocultar a mensagem de nenhuma despesa.
+2. WHEN não existir despesa na viagem THEN the system SHALL exibir a mensagem de nenhuma despesa e SHALL não manter itens antigos na lista.
+3. WHEN existir ao menos uma obrigação em aberto THEN the system SHALL listar as obrigações e SHALL ocultar a mensagem de tudo quitado.
+4. WHEN não existir obrigação em aberto THEN the system SHALL exibir a mensagem de tudo quitado somente quando o estado simulado não tiver pendências.
+5. IF uma ação simulada falhar THEN the system SHALL exibir um estado de erro identificável e SHALL não apresentar vazio como se fosse sucesso.
 
-**Independent Test**: Executar reset autorizado, não autorizado, repetido e com falha simulada, verificando atomicidade e histórico.
+**Independent Test**: Alternar o estado simulado entre com dados, sem dados e erro, e verificar listas, mensagens e limpeza de estado anterior.
 
-### P2: Layout clean e moderno
+### P1: Pagamento em duas etapas
 
-**User Story**: Como usuário não técnico, quero uma interface bonita, clara e fácil de navegar no celular e no desktop.
+**User Story**: Como participante, quero declarar que paguei uma obrigação e que o recebedor confirme, para o pagamento só ser concluído quando quem recebe confirmar.
 
-**Why P2**: Melhora confiança e entendimento depois que os estados funcionais estiverem definidos.
+**Why P1**: É o combinado do grupo e evita marcar como pago sem o aceite de quem recebe.
 
 **Acceptance Criteria**:
 
-1. WHEN o usuário abrir a plataforma THEN the system SHALL usar exclusivamente o modo claro e SHALL não exibir seletor de modo escuro.
-2. WHEN o usuário navegar pelo fluxo principal THEN the system SHALL apresentar hierarquia visual clara, ação primária identificável e linguagem não técnica.
-3. WHEN uma tela estiver carregando, vazia, indisponível, em sucesso ou em erro THEN the system SHALL exibir o estado correspondente sem confundi-lo com dados reais.
-4. WHEN a viewport for celular, tablet ou desktop THEN the system SHALL manter conteúdo legível, ações alcançáveis e layout sem overflow horizontal.
+1. WHEN o devedor de uma obrigação aciona "declarar pagamento" THEN the system SHALL marcar a obrigação como aguardando confirmação e SHALL mantê-la no saldo pendente.
+2. WHEN o recebedor da obrigação confirma o recebimento THEN the system SHALL marcar a obrigação como pagamento concluído e SHALL removê-la do saldo pendente.
+3. IF um usuário que não é o recebedor tentar confirmar o recebimento THEN the system SHALL impedir a confirmação e SHALL manter o estado anterior.
+4. WHILE uma obrigação estiver aguardando confirmação THEN the system SHALL exibir esse estado de forma distinta de pendente e de concluído.
+5. WHEN o recebedor recusa uma declaração de pagamento THEN the system SHALL retornar a obrigação para pendente e SHALL mantê-la no saldo pendente.
+
+**Independent Test**: Declarar pagamento como devedor, confirmar como recebedor, tentar confirmar com outro usuário e recusar uma declaração, verificando estados e saldo.
+
+### P1: Prazo por obrigação
+
+**User Story**: Como pessoa que tem a receber, quero definir o prazo de uma obrigação para o devedor saber até quando pagar.
+
+**Why P1**: O prazo orienta a cobrança e destaca atrasos.
+
+**Acceptance Criteria**:
+
+1. WHEN o recebedor define um prazo para uma obrigação THEN the system SHALL associar esse prazo à obrigação no estado simulado.
+2. WHILE a data simulada de referência for anterior ou igual ao prazo e a obrigação não estiver concluída THEN the system SHALL exibir a obrigação como dentro do prazo.
+3. WHILE a data simulada de referência for posterior ao prazo e a obrigação não estiver concluída THEN the system SHALL exibir a obrigação como atrasada.
+4. IF um usuário que não é o recebedor tentar definir o prazo THEN the system SHALL impedir a ação e SHALL manter o prazo anterior.
+5. WHERE uma obrigação não tiver prazo definido THEN the system SHALL exibi-la sem indicação de atraso.
+
+**Independent Test**: Definir prazo como recebedor, variar a data de referência simulada em torno do prazo e tentar definir prazo com outro usuário.
+
+### P1: Reset de gastos com bloqueio
+
+**User Story**: Como owner, quero resetar os gastos da viagem, mas ser impedido quando já houve pagamento concluído.
+
+**Why P1**: Reset é destrutivo e não pode apagar uma viagem que já teve quitação.
+
+**Acceptance Criteria**:
+
+1. WHEN o owner aciona o reset e confirma a ação THEN the system SHALL apagar as despesas e obrigações em aberto da viagem no estado simulado.
+2. IF a viagem tiver ao menos um pagamento concluído THEN the system SHALL bloquear o reset e SHALL explicar o motivo.
+3. IF um usuário que não é owner tentar resetar THEN the system SHALL impedir a ação e SHALL não alterar dados.
+4. WHEN o reset for solicitado THEN the system SHALL exigir uma confirmação explícita antes de apagar.
+5. IF o usuário cancelar a confirmação THEN the system SHALL preservar os gastos.
+
+**Independent Test**: Resetar uma viagem sem pagamentos, tentar resetar uma com pagamento concluído, tentar como member e cancelar a confirmação.
+
+### P1: Resumo global com netting
+
+**User Story**: Como usuário, quero ver na tela inicial quanto devo ou tenho a receber de cada pessoa, com valores líquidos.
+
+**Why P1**: É a visão central do produto além de uma viagem única.
+
+**Acceptance Criteria**:
+
+1. WHEN o usuário abre a tela inicial autenticada THEN the system SHALL exibir, por pessoa, o valor líquido que ele deve ou tem a receber considerando suas viagens simuladas.
+2. WHEN o usuário tem valores a pagar e a receber com a mesma pessoa THEN the system SHALL apresentar apenas o resultado líquido entre os dois.
+3. WHEN não houver pendência com ninguém THEN the system SHALL exibir um estado vazio verdadeiro e SHALL não afirmar que há dívidas.
+4. WHEN o usuário seleciona uma pessoa do resumo THEN the system SHALL detalhar a origem por viagem e o estado de cada obrigação.
+5. The system SHALL excluir do resumo as obrigações já concluídas do cálculo de pendência.
+
+**Independent Test**: Montar obrigações opostas com a mesma pessoa em viagens diferentes e conferir o valor líquido, o estado vazio e o detalhamento.
+
+### P2: Visual clean e moderno
+
+**User Story**: Como usuário não técnico, quero uma interface bonita, clara e responsiva em modo claro.
+
+**Why P2**: Reforça confiança e entendimento depois que os fluxos estão definidos.
+
+**Acceptance Criteria**:
+
+1. The system SHALL usar exclusivamente o modo claro e SHALL não exibir seletor de modo escuro.
+2. WHEN o usuário percorre o fluxo principal THEN the system SHALL apresentar hierarquia visual clara, ação primária evidente e linguagem simples.
+3. WHEN uma tela estiver carregando, vazia, em erro ou indisponível THEN the system SHALL exibir o estado correspondente sem confundi-lo com dados reais.
+4. WHEN a viewport for de celular, tablet ou desktop THEN the system SHALL manter o conteúdo legível, ações alcançáveis e sem overflow horizontal.
 5. The system SHALL manter foco visível, contraste suficiente, labels associados e informação que não dependa apenas de cor.
 
 **Independent Test**: UAT nos três tamanhos de viewport com checklist de jornada, estados, acessibilidade e ausência de dark mode.
 
 ## Edge Cases
 
-- IF dois usuários tiverem o mesmo nome THEN the system SHALL diferenciá-los pela identidade da conta e não pelo nome exibido.
-- IF uma conta perder membership durante uma sessão THEN the system SHALL impedir novas leituras protegidas e SHALL atualizar a UI sem expor dados antigos como atuais.
-- IF duas requisições confirmarem a mesma obrigação simultaneamente THEN the system SHALL produzir um único estado final consistente.
-- IF duas requisições de reset ocorrerem simultaneamente THEN the system SHALL permitir no máximo uma transição válida por ciclo.
-- IF uma despesa existente não possuir estado após a migração THEN the system SHALL aplicar uma compatibilidade definida e rastreável, nunca inferir “quitada” por ausência de dados.
-- IF a API falhar parcialmente ao carregar o resumo THEN the system SHALL indicar indisponibilidade e não renderizar “nenhuma despesa” ou “tudo quitado” como fallback enganoso.
-- IF o prazo estiver no limite do dia ou em timezone diferente THEN the system SHALL usar a regra temporal aprovada e testável.
+- IF o estado simulado do navegador estiver vazio no primeiro acesso THEN the system SHALL apresentar um ponto de partida claro para cadastro e criação de viagem.
+- IF duas pessoas tiverem o mesmo nome THEN the system SHALL diferenciá-las pela identidade simulada da conta e não apenas pelo nome exibido.
+- IF o usuário recarregar a página THEN the system SHALL manter o estado simulado conforme a estratégia de persistência escolhida ou SHALL indicar claramente que o estado foi reiniciado.
+- IF uma obrigação já concluída aparecer em uma consulta THEN the system SHALL mantê-la fora do saldo pendente e do cálculo do resumo global.
+- IF o usuário tentar declarar pagamento de uma obrigação que não é dele THEN the system SHALL impedir a ação.
+- IF a data de referência simulada não estiver disponível THEN the system SHALL tratar prazos de forma definida e consistente, sem marcar atraso aleatório.
 
 ## Requirement Traceability
 
 | Requirement ID | Story | Phase | Status |
 | --- | --- | --- | --- |
-| EVOL-01 | P1: Estados financeiros verdadeiros | Design | Pending |
-| EVOL-02 | P1: Estados financeiros verdadeiros | Design | Pending |
-| EVOL-03 | P1: Estados financeiros verdadeiros | Design | Pending |
-| EVOL-04 | P1: Estados financeiros verdadeiros | Design | Pending |
-| EVOL-05 | P1: Estados financeiros verdadeiros | Design | Pending |
-| EVOL-06 | P1: Conta, login e acesso às viagens | Design | Pending |
-| EVOL-07 | P1: Conta, login e acesso às viagens | Design | Pending |
-| EVOL-08 | P1: Conta, login e acesso às viagens | Design | Pending |
-| EVOL-09 | P1: Conta, login e acesso às viagens | Design | Pending |
-| EVOL-10 | P1: Conta, login e acesso às viagens | Design | Pending |
-| EVOL-11 | P1: Conta, login e acesso às viagens | Design | Pending |
-| EVOL-12 | P1: Resumo global de dívidas | Design | Pending |
-| EVOL-13 | P1: Resumo global de dívidas | Design | Pending |
-| EVOL-14 | P1: Resumo global de dívidas | Design | Pending |
-| EVOL-15 | P1: Resumo global de dívidas | Design | Pending |
-| EVOL-16 | P1: Resumo global de dívidas | Design | Pending |
-| EVOL-17 | P1: Confirmação de pagamento e prazo | Design | Pending |
-| EVOL-18 | P1: Confirmação de pagamento e prazo | Design | Pending |
-| EVOL-19 | P1: Confirmação de pagamento e prazo | Design | Pending |
-| EVOL-20 | P1: Confirmação de pagamento e prazo | Design | Pending |
-| EVOL-21 | P1: Confirmação de pagamento e prazo | Design | Pending |
-| EVOL-22 | P1: Confirmação de pagamento e prazo | Design | Pending |
-| EVOL-23 | P1: Reset seguro de gastos | Design | Pending |
-| EVOL-24 | P1: Reset seguro de gastos | Design | Pending |
-| EVOL-25 | P1: Reset seguro de gastos | Design | Pending |
-| EVOL-26 | P1: Reset seguro de gastos | Design | Pending |
-| EVOL-27 | P1: Reset seguro de gastos | Design | Pending |
-| EVOL-28 | P2: Layout clean e moderno | Design | Pending |
-| EVOL-29 | P2: Layout clean e moderno | Design | Pending |
-| EVOL-30 | P2: Layout clean e moderno | Design | Pending |
-| EVOL-31 | P2: Layout clean e moderno | Design | Pending |
-| EVOL-32 | P2: Layout clean e moderno | Design | Pending |
+| PROTO-01 | P1: Cadastro e login simulados | Design | Pending |
+| PROTO-02 | P1: Cadastro e login simulados | Design | Pending |
+| PROTO-03 | P1: Cadastro e login simulados | Design | Pending |
+| PROTO-04 | P1: Cadastro e login simulados | Design | Pending |
+| PROTO-05 | P1: Cadastro e login simulados | Design | Pending |
+| PROTO-06 | P1: Viagens por usuário com papéis | Design | Pending |
+| PROTO-07 | P1: Viagens por usuário com papéis | Design | Pending |
+| PROTO-08 | P1: Viagens por usuário com papéis | Design | Pending |
+| PROTO-09 | P1: Viagens por usuário com papéis | Design | Pending |
+| PROTO-10 | P1: Estados verdadeiros de despesas e quitação | Design | Pending |
+| PROTO-11 | P1: Estados verdadeiros de despesas e quitação | Design | Pending |
+| PROTO-12 | P1: Estados verdadeiros de despesas e quitação | Design | Pending |
+| PROTO-13 | P1: Estados verdadeiros de despesas e quitação | Design | Pending |
+| PROTO-14 | P1: Estados verdadeiros de despesas e quitação | Design | Pending |
+| PROTO-15 | P1: Pagamento em duas etapas | Design | Pending |
+| PROTO-16 | P1: Pagamento em duas etapas | Design | Pending |
+| PROTO-17 | P1: Pagamento em duas etapas | Design | Pending |
+| PROTO-18 | P1: Pagamento em duas etapas | Design | Pending |
+| PROTO-19 | P1: Pagamento em duas etapas | Design | Pending |
+| PROTO-20 | P1: Prazo por obrigação | Design | Pending |
+| PROTO-21 | P1: Prazo por obrigação | Design | Pending |
+| PROTO-22 | P1: Prazo por obrigação | Design | Pending |
+| PROTO-23 | P1: Prazo por obrigação | Design | Pending |
+| PROTO-24 | P1: Prazo por obrigação | Design | Pending |
+| PROTO-25 | P1: Reset de gastos com bloqueio | Design | Pending |
+| PROTO-26 | P1: Reset de gastos com bloqueio | Design | Pending |
+| PROTO-27 | P1: Reset de gastos com bloqueio | Design | Pending |
+| PROTO-28 | P1: Reset de gastos com bloqueio | Design | Pending |
+| PROTO-29 | P1: Reset de gastos com bloqueio | Design | Pending |
+| PROTO-30 | P1: Resumo global com netting | Design | Pending |
+| PROTO-31 | P1: Resumo global com netting | Design | Pending |
+| PROTO-32 | P1: Resumo global com netting | Design | Pending |
+| PROTO-33 | P1: Resumo global com netting | Design | Pending |
+| PROTO-34 | P1: Resumo global com netting | Design | Pending |
+| PROTO-35 | P2: Visual clean e moderno | Design | Pending |
+| PROTO-36 | P2: Visual clean e moderno | Design | Pending |
+| PROTO-37 | P2: Visual clean e moderno | Design | Pending |
+| PROTO-38 | P2: Visual clean e moderno | Design | Pending |
+| PROTO-39 | P2: Visual clean e moderno | Design | Pending |
 
-**ID format:** `EVOL-NN`  
+**ID format:** `PROTO-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified  
-**Coverage:** 32 acceptance criteria agrupados, mapeamento detalhado será fechado em `tasks.md` após Discuss.
+**Coverage:** 39 acceptance criteria; mapeamento por task fechado em `tasks.md`.
 
 ## Success Criteria
 
-- [ ] O usuário nunca vê estado vazio quando o payload contém dados.
-- [ ] Acesso a viagens e resumo global respeitam membership autenticada.
-- [ ] Pagamentos, prazos e reset possuem lifecycle, autorização, atomicidade e testes.
-- [ ] A interface mantém modo claro, visual clean e feedback completo em todos os estados.
-- [ ] Cada AC tem teste e evidência independente antes da feature ser marcada como concluída.
+- [ ] O protótipo roda apenas no frontend, sem depender de backend ou banco.
+- [ ] Cadastro, login e logout simulados funcionam e são identificados como simulação.
+- [ ] Despesas, obrigações e resumo nunca mostram vazio quando há dados.
+- [ ] O pagamento só conclui após a confirmação do recebedor e muda o saldo pendente.
+- [ ] O prazo por obrigação reflete dentro do prazo e atrasado conforme a data de referência.
+- [ ] O reset apaga gastos, é bloqueado após pagamento concluído e exige confirmação.
+- [ ] O resumo global mostra o valor líquido por pessoa com netting.
+- [ ] A interface é clean, responsiva, acessível e em modo claro.
