@@ -17,6 +17,15 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — PROTO T3: telas de autenticação
+
+- **O que mudou:** criado `frontend/prototype/index.html` com telas de login e cadastro, abas acessíveis, aviso de simulação e container da área autenticada. Para a tela funcionar isolada, foram criados um `app.js` mínimo (alternância de abas, login/cadastro/logout, erros e transição de tela) e um `prototype.css` base em modo claro.
+- **Por quê:** entregar a jornada de entrada do protótipo de forma verificável.
+- **Nota de rastreabilidade:** `app.js` (Where de T11) e `prototype.css` (Where de T12) começaram como base nesta task e serão enriquecidos nas suas tasks próprias; nenhum arquivo de `backend/` foi tocado.
+- **Arquivos:** `frontend/prototype/index.html`, `frontend/prototype/app.js`, `frontend/prototype/prototype.css`, `docs/features/evolucao-conta-compartilhada/tasks.md`.
+- **Gate:** `node --check` verde nos três JS; UAT do fluxo de entrada pendente de execução no navegador pelo usuário.
+- **Commit:** `feat(frontend): add authentication screens`.
+
 ### 2026-09-20 — PROTO T2: autenticação simulada
 
 - **O que mudou:** criado `frontend/prototype/auth.js` com cadastro, login, logout e usuário atual simulados sobre o store, incluindo aviso explícito de simulação e mensagem de erro neutra.

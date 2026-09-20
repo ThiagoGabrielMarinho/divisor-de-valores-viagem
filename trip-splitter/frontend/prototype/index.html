@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trip Splitter — protótipo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="prototype.css" />
+</head>
+<body>
+
+<!-- Aviso permanente de que tudo é simulado, sem backend. -->
+<p id="sim-banner" class="sim-banner" role="note">
+  Protótipo de interface: cadastro, login e dados são simulados no navegador, sem servidor.
+</p>
+
+<main id="app">
+
+  <!-- Tela: autenticação (login + cadastro) -->
+  <section id="screen-auth" class="screen" aria-labelledby="auth-title">
+    <div class="auth-wrap">
+      <header class="auth-header">
+        <h1 id="auth-title">Trip Splitter</h1>
+        <p class="auth-subtitle">Divida os gastos da viagem e acompanhe quem deve quem.</p>
+      </header>
+
+      <div class="auth-tabs" role="tablist" aria-label="Entrar ou criar conta">
+        <button id="tab-login" class="auth-tab is-active" role="tab" aria-selected="true" aria-controls="form-login" type="button">Entrar</button>
+        <button id="tab-signup" class="auth-tab" role="tab" aria-selected="false" aria-controls="form-signup" type="button">Criar conta</button>
+      </div>
+
+      <!-- Login -->
+      <form id="form-login" class="auth-form" role="tabpanel" aria-labelledby="tab-login">
+        <label for="login-email">Email</label>
+        <input id="login-email" name="email" type="email" autocomplete="off" placeholder="voce@exemplo.com" required />
+
+        <label for="login-senha">Senha</label>
+        <input id="login-senha" name="senha" type="password" autocomplete="off" placeholder="sua senha simulada" required />
+
+        <p id="login-error" class="form-error hidden" role="alert"></p>
+
+        <button type="submit" class="btn-primary">Entrar</button>
+      </form>
+
+      <!-- Cadastro -->
+      <form id="form-signup" class="auth-form hidden" role="tabpanel" aria-labelledby="tab-signup">
+        <label for="signup-nome">Nome</label>
+        <input id="signup-nome" name="nome" type="text" autocomplete="off" placeholder="Como você aparece para o grupo" required />
+
+        <label for="signup-email">Email</label>
+        <input id="signup-email" name="email" type="email" autocomplete="off" placeholder="voce@exemplo.com" required />
+
+        <label for="signup-senha">Senha</label>
+        <input id="signup-senha" name="senha" type="password" autocomplete="off" placeholder="mínimo 4 caracteres" required />
+
+        <p id="signup-error" class="form-error hidden" role="alert"></p>
+
+        <button type="submit" class="btn-primary">Criar conta</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Tela: área autenticada (conteúdo detalhado será preenchido em tasks futuras) -->
+  <section id="screen-home" class="screen hidden" aria-labelledby="home-title">
+    <header class="app-header">
+      <div>
+        <h1 id="home-title">Suas viagens</h1>
+        <p id="home-greeting" class="app-subtitle"></p>
+      </div>
+      <button id="btn-logout" class="btn-ghost" type="button">Sair</button>
+    </header>
+
+    <div id="home-content" class="home-content">
+      <!-- Preenchido pelas tasks de viagens e resumo global. -->
+    </div>
+  </section>
+
+</main>
+
+<div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+<script src="store.js"></script>
+<script src="auth.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

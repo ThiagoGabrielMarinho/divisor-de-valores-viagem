@@ -89,7 +89,7 @@ T9 -> T10 -> T11 -> T12
 
 ### T3: Criar telas de autenticação
 
-**Status**: Proposed
+**Status**: Done
 **What**: Criar as telas de cadastro/login e o container das áreas autenticadas.
 **Where**: `frontend/prototype/index.html`
 **Depends on**: T2
