@@ -77,7 +77,7 @@ T9 -> T10 -> T11 -> T12
 
 ### T2: Simular cadastro, login e logout
 
-**Status**: Proposed
+**Status**: Done
 **What**: Implementar cadastro por email/senha, login validando o estado simulado, logout e aviso explícito de simulação.
 **Where**: `frontend/prototype/auth.js`
 **Depends on**: T1

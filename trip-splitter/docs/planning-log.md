@@ -17,6 +17,14 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — PROTO T2: autenticação simulada
+
+- **O que mudou:** criado `frontend/prototype/auth.js` com cadastro, login, logout e usuário atual simulados sobre o store, incluindo aviso explícito de simulação e mensagem de erro neutra.
+- **Por quê:** permitir o fluxo de identidade no protótipo sem servidor nem segurança real.
+- **Arquivos:** `frontend/prototype/auth.js`, `docs/features/evolucao-conta-compartilhada/tasks.md`.
+- **Gate:** `node --check` verde; checagem manual confirmou cadastro, duplicado rejeitado, login válido/inválido, logout e sessão.
+- **Commit:** `feat(frontend): simulate signup and login`.
+
 ### 2026-09-20 — PROTO T1: store simulado do protótipo
 
 - **O que mudou:** criado o store simulado do protótipo em `frontend/prototype/store.js`, com estado em memória espelhado em `localStorage`, entidades (users, session, trips, memberships, expenses, obligations), geração de IDs, update/persist e sinal de reinício de estado.
