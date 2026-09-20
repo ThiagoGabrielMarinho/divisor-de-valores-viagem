@@ -40,3 +40,16 @@ Este arquivo mantém o histórico das unidades de trabalho documentais do projet
 **Done when**: os artefatos refletem escopo frontend-only, decisões confirmadas sem default silencioso e tasks tocando apenas `frontend/`, cada uma com testes, gate, Done when e commit planejado.
 **Commit**: `docs(planning): scope shared account prototype to frontend`
 **Commit status**: Created in this commit
+
+## T4: Criar registro contínuo de documentação e planejamento
+
+**Status**: Done
+**What**: Criar um changelog persistente que registra cada alteração de documentação/planejamento do projeto, para consulta contínua.
+**Where**: `docs/planning-log.md`
+**Depends on**: T3
+**Requirement**: Rastreabilidade de documentação e planejamento
+**Tests**: revisão de conteúdo e `git diff --check`
+**Gate**: `git diff --check`
+**Done when**: o log existe, explica seu propósito e registra as entradas de planejamento já realizadas (T1, T2, T3) com data, escopo e commit.
+**Commit**: `docs(process): add planning changelog`
+**Commit status**: Created in this commit
