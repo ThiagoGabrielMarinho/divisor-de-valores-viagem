@@ -3,7 +3,7 @@
 **Spec:** `docs/features/evolucao-conta-compartilhada/spec.md`  
 **Context:** `docs/features/evolucao-conta-compartilhada/context.md`  
 **Design:** `docs/features/evolucao-conta-compartilhada/design.md`  
-**Status:** Proposed — escopo somente frontend
+**Status:** Implementado — protótipo frontend concluído (T1–T12); UAT interativa e Verifier pendentes
 
 ## Execution Protocol
 
@@ -197,7 +197,7 @@ T9 -> T10 -> T11 -> T12
 
 ### T12: Redesign clean, claro e responsivo
 
-**Status**: Proposed
+**Status**: Done
 **What**: Consolidar o sistema visual claro, moderno, responsivo e acessível em todas as telas, sem dark mode.
 **Where**: `frontend/prototype/prototype.css`
 **Depends on**: T11

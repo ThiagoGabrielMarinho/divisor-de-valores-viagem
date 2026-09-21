@@ -1,35 +1,60 @@
 /* Sistema visual do protótipo Trip Splitter.
-   Base mínima nesta task (T3); o redesign completo é a task T12.
-   Modo claro exclusivo, sem dark mode. */
+   Modo claro exclusivo, sem dark mode. Objetivo: clean, moderno, legível,
+   acessível e responsivo em celular, tablet e desktop. */
 
 :root {
-  --bg: #f4f6fb;
+  --bg: #f5f7fb;
   --surface: #ffffff;
-  --ink: #1b2440;
-  --muted: #5b6478;
-  --line: #dfe3ee;
+  --surface-soft: #f0f3f9;
+  --ink: #16203a;
+  --muted: #626c85;
+  --line: #e2e7f0;
+  --line-strong: #cbd3e1;
   --brand: #2f6d5b;
-  --brand-strong: #245847;
+  --brand-strong: #235244;
+  --brand-soft: #e7f1ec;
+  --positive: #1f7a52;
+  --negative: #b3402c;
   --danger: #b3402c;
+  --danger-soft: #f8e9e6;
+  --warning: #9a6a12;
   --focus: #2f6d5b;
+  --radius: 14px;
+  --radius-sm: 9px;
+  --shadow: 0 1px 2px rgba(22, 32, 58, 0.06), 0 8px 24px rgba(22, 32, 58, 0.05);
+  --space: 1rem;
 }
 
 * { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
   line-height: 1.5;
+  font-size: 16px;
 }
 
 .hidden { display: none !important; }
 
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Aviso de simulação */
 .sim-banner {
   margin: 0;
   padding: 0.6rem 1rem;
-  background: #eaf2ee;
+  background: var(--brand-soft);
   color: var(--brand-strong);
   font-size: 0.85rem;
   text-align: center;
@@ -39,73 +64,103 @@ body {
 #app {
   max-width: 960px;
   margin: 0 auto;
-  padding: 1.5rem 1.25rem 4rem;
+  padding: 1.5rem 1.15rem 4rem;
 }
 
+/* Cartões */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.35rem;
+  margin-bottom: 1.15rem;
+  box-shadow: var(--shadow);
+}
+
+.card h2 {
+  margin: 0 0 0.9rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+/* Cabeçalhos de tela */
+.app-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.app-header h1 { margin: 0; font-size: 1.5rem; font-weight: 700; }
+.app-subtitle { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.92rem; }
+
+/* Autenticação */
 .auth-wrap {
   max-width: 420px;
   margin: 2.5rem auto 0;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 1.75rem;
+  border-radius: var(--radius);
+  padding: 1.85rem;
+  box-shadow: var(--shadow);
 }
+.auth-header h1 { margin: 0 0 0.25rem; font-size: 1.65rem; font-weight: 700; }
+.auth-subtitle { margin: 0 0 1.35rem; color: var(--muted); font-size: 0.95rem; }
 
-.auth-header h1 { margin: 0 0 0.25rem; font-size: 1.6rem; }
-.auth-subtitle { margin: 0 0 1.25rem; color: var(--muted); font-size: 0.95rem; }
-
-.auth-tabs {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1.25rem;
-}
-
+.auth-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.35rem; }
 .auth-tab {
   flex: 1;
-  padding: 0.55rem;
-  border: 1px solid var(--line);
-  background: var(--bg);
+  padding: 0.6rem;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-soft);
   color: var(--muted);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font: inherit;
   font-weight: 600;
   cursor: pointer;
 }
-
-.auth-tab.is-active {
-  background: var(--brand);
-  color: #fff;
-  border-color: var(--brand);
-}
+.auth-tab.is-active { background: var(--brand); color: #fff; border-color: var(--brand); }
 
 .auth-form { display: flex; flex-direction: column; }
 
-label {
+/* Formulários */
+label, .field-label {
+  display: block;
   font-size: 0.82rem;
   color: var(--muted);
-  margin: 0.75rem 0 0.3rem;
+  margin: 0.85rem 0 0.35rem;
+  font-weight: 500;
 }
-label:first-of-type { margin-top: 0; }
+label:first-of-type, .auth-form label:first-of-type { margin-top: 0; }
 
-input {
-  padding: 0.65rem 0.75rem;
-  border: 1px solid var(--line);
-  border-radius: 8px;
+input[type="text"], input[type="email"], input[type="password"], input[type="number"], select {
+  width: 100%;
+  padding: 0.68rem 0.78rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
   font: inherit;
   background: #fff;
   color: var(--ink);
 }
 
-input:focus, button:focus {
+input:focus, select:focus, button:focus, .trip-open:focus {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
 
+/* Botões */
 .btn-primary {
-  margin-top: 1.25rem;
-  padding: 0.7rem;
+  margin-top: 1.2rem;
+  padding: 0.72rem;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background: var(--brand);
   color: #fff;
   font: inherit;
@@ -116,30 +171,201 @@ input:focus, button:focus {
 
 .btn-ghost {
   padding: 0.5rem 0.9rem;
-  border: 1px solid var(--line);
-  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--ink);
   font: inherit;
   cursor: pointer;
 }
+.btn-ghost:hover { background: var(--surface-soft); }
+
+.btn-small {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.btn-small:hover { background: var(--brand-soft); border-color: var(--brand); }
+
+.btn-danger {
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-sm);
+  background: var(--danger);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-danger:hover { filter: brightness(0.95); }
+.btn-danger:disabled {
+  background: var(--surface-soft);
+  color: var(--muted);
+  border-color: var(--line-strong);
+  cursor: not-allowed;
+}
 
 .form-error {
-  margin: 0.75rem 0 0;
+  margin: 0.8rem 0 0;
   color: var(--danger);
   font-size: 0.85rem;
 }
 
-.app-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
+.status-note {
+  margin: 0.6rem 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
 }
-.app-header h1 { margin: 0; font-size: 1.5rem; }
-.app-subtitle { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.9rem; }
+.status-note.is-error { color: var(--danger); }
 
+/* Formulário inline (nova viagem, adicionar membro) */
+.inline-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+  flex-wrap: wrap;
+}
+.inline-form input { flex: 1; min-width: 180px; }
+.inline-form button {
+  margin-top: 0;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--brand);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.inline-form button:hover { background: var(--brand-strong); }
+.inline-form .btn-primary { margin-top: 0; }
+
+/* Resumo global */
+.summary-list, .trips-list, .expenses-list, .obligations-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-soft);
+}
+.summary-name { font-weight: 500; }
+.summary-amount { font-weight: 700; font-variant-numeric: tabular-nums; }
+.summary-item.positive .summary-amount { color: var(--positive); }
+.summary-item.negative .summary-amount { color: var(--negative); }
+
+/* Viagens */
+.trip-item { display: flex; }
+.trip-open {
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+.trip-open:hover { border-color: var(--brand); background: var(--brand-soft); }
+
+/* Grid da viagem */
+.trip-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.15rem;
+}
+@media (max-width: 760px) {
+  .trip-grid { grid-template-columns: 1fr; }
+}
+
+/* Chips de participantes */
+.chips {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.chips li {
+  font-size: 0.82rem;
+  border: 1px solid var(--line-strong);
+  padding: 0.28rem 0.65rem;
+  border-radius: 999px;
+  background: var(--surface-soft);
+}
+
+/* Checkbox de divisão */
+.checkbox-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+.checkbox-list label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.checkbox-list input { width: auto; }
+
+/* Despesas */
+.expense-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.expense-desc { font-weight: 500; }
+.expense-payer { color: var(--muted); font-size: 0.85rem; }
+.expense-amount { margin-left: auto; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Obrigações */
+.obligation-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  flex-wrap: wrap;
+}
+.obligation-text { font-size: 0.92rem; }
+.obligation-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+/* Zona de risco (reset) */
+.danger-zone { border-color: var(--danger); background: var(--danger-soft); }
+.danger-zone h2 { color: var(--danger); }
+
+/* Toast */
 .toast {
   position: fixed;
   bottom: 1.25rem;
@@ -147,12 +373,18 @@ input:focus, button:focus {
   transform: translateX(-50%);
   background: var(--ink);
   color: #fff;
-  padding: 0.65rem 1.1rem;
-  border-radius: 8px;
-  font-size: 0.88rem;
+  padding: 0.7rem 1.15rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  box-shadow: var(--shadow);
+  max-width: calc(100% - 2rem);
 }
 .toast.error { background: var(--danger); }
 
 @media (max-width: 520px) {
-  .auth-wrap { margin-top: 1.25rem; padding: 1.25rem; }
+  #app { padding: 1rem 0.9rem 3rem; }
+  .auth-wrap { margin-top: 1.25rem; padding: 1.35rem; }
+  .app-header { flex-direction: column; }
+  .obligation-item { flex-direction: column; align-items: flex-start; }
+  .obligation-actions { width: 100%; }
 }

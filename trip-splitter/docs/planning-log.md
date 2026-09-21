@@ -17,6 +17,14 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — PROTO T12: redesign clean, claro e responsivo
+
+- **O que mudou:** `frontend/prototype/prototype.css` reescrito como sistema visual moderno em modo claro exclusivo, com tokens de cor, hierarquia, cartões, botões (primário, ghost, small, danger), listas de resumo/viagens/despesas/obrigações, chips, checkbox de divisão, zona de risco do reset, foco visível, contraste, `sr-only` e responsividade (grid da viagem colapsa, header empilha, obrigações em coluna no mobile).
+- **Por quê:** entregar a experiência clean, bonita e acessível pedida, sem dark mode.
+- **Arquivos:** `frontend/prototype/prototype.css`, `docs/features/evolucao-conta-compartilhada/tasks.md`.
+- **Gate:** checagem de consistência confirmou que todas as classes usadas pela UI têm estilo, que não há `prefers-color-scheme`/tema escuro (a única ocorrência de "dark" é o comentário "sem dark mode") e que o CSS tem conteúdo. UAT visual no navegador pendente de execução pelo usuário.
+- **Commit:** `style(frontend): modernize light prototype experience`.
+
 ### 2026-09-20 — PROTO T11: controlador de UI completo
 
 - **O que mudou:** `frontend/prototype/app.js` reescrito como controlador completo (home com resumo global e viagens, tela de viagem com participantes, despesas, obrigações, pagamentos em duas etapas, prazos e reset), usando `render.applyState` para estados verdadeiros. `index.html` ganhou os contêineres de home e da tela de viagem.
