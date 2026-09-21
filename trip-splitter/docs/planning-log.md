@@ -17,6 +17,14 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — PROTO T7: pagamento em duas etapas
+
+- **O que mudou:** criado `frontend/prototype/payments.js` com `declarePayment` (devedor), `confirmReceipt` (recebedor), `rejectDeclaration` (recebedor) e `pendingBalanceForUser`, aplicando as transições pendente → aguardando_confirmacao → concluido e a regra de que concluído sai do saldo pendente. Incluído no `index.html`.
+- **Por quê:** implementar o combinado do grupo: quem paga declara e quem recebe confirma.
+- **Arquivos:** `frontend/prototype/payments.js`, `frontend/prototype/index.html`, `docs/features/evolucao-conta-compartilhada/tasks.md`.
+- **Gate:** `node --check` verde; checagem manual confirmou papéis, transições, recusa e efeito no saldo pendente.
+- **Commit:** `feat(frontend): add two-step payment confirmation`.
+
 ### 2026-09-20 — PROTO T6: estados verdadeiros de renderização
 
 - **O que mudou:** criado `frontend/prototype/render.js` com `decideState` puro (loading, error, unavailable, empty, data), mensagens por seção e `applyState` para o DOM. Erro e ausência de dados nunca são tratados como "vazio". Incluído no `index.html`.

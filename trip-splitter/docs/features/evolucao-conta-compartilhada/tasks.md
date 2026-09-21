@@ -137,7 +137,7 @@ T9 -> T10 -> T11 -> T12
 
 ### T7: Fluxo de pagamento em duas etapas
 
-**Status**: Proposed
+**Status**: Done
 **What**: Implementar declarar pagamento pelo devedor, confirmar recebimento pelo recebedor e recusa, movendo o valor do pendente para concluído na confirmação.
 **Where**: `frontend/prototype/payments.js`
 **Depends on**: T6
