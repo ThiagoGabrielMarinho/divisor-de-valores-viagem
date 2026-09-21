@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — Backend T8: prazos por obrigação
+
+- **O que mudou:** `obligationService` ganhou definição/limpeza de prazo pelo recebedor, validação `YYYY-MM-DD` e status temporal determinístico (`sem_prazo`, `no_prazo`, `atrasado`, `concluido`); Drizzle usa `DATE`.
+- **Gate:** isolado 6/6 e suíte completa no Aiven após T13: 31/31 testes passaram.
+- **Commit:** `feat(payments): add obligation deadlines`.
+
 ### 2026-09-20 — Backend T13: suíte PostgreSQL sequencial
 
 - **O que mudou:** `backend/package.json` passou a executar `node:test` com `--test-concurrency=1`, evitando corrida entre arquivos que encerram o pool compartilhado.

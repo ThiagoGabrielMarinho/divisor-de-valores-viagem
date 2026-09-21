@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, integer, serial, timestamp, index, uniqueIndex, check } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, serial, timestamp, date, index, uniqueIndex, check } from "drizzle-orm/pg-core";
 
 // O schema mantém os exports legados usados pelo MVP enquanto as tasks do
 // backend migram services e rotas para identidade real. As novas entidades
@@ -110,7 +110,7 @@ export const obligations = pgTable(
     para_user_id: text("para_user_id").notNull().references(() => users.id),
     valor_cents: integer("valor_cents").notNull(),
     estado: text("estado").notNull().default("pendente"),
-    prazo: text("prazo"),
+    prazo: date("prazo", { mode: "string" }),
     confirmado_em: timestamp("confirmado_em", { withTimezone: true }),
     created_at: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   },

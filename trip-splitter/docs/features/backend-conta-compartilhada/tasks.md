@@ -135,14 +135,14 @@ T9 -> T10 -> T11 -> T12
 
 ### T8: Implementar prazos
 
-**Status**: In Progress
+**Status**: Done
 **What**: Permitir ao recebedor definir prazo por obrigação e consultar status temporal.
 **Where**: `backend/src/services/obligationService.ts`
 **Depends on**: T7
 **Requirement**: API-18
 **Tests**: prazo, timezone definido, atraso, ausência e permissão
 **Gate**: `npm test`
-**Done when**: status temporal é determinístico e prazo só pode ser alterado pelo recebedor.
+**Done when**: prazo é validado como data, só o recebedor pode definir/limpar, status é determinístico e obrigação concluída não aceita alteração.
 **Commit**: `feat(payments): add obligation deadlines`
 
 ### T9: Implementar reset seguro

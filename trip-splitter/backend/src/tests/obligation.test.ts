@@ -9,6 +9,10 @@ import {
   declarePayment,
   listObligations,
   rejectDeclaration,
+  setDeadline,
+  clearDeadline,
+  deadlineStatus,
+  obligationInternals,
 } from "../services/obligationService";
 import { ValidationError } from "../types";
 
@@ -86,6 +90,46 @@ test("obligation: confirmação concorrente produz uma única conclusão", async
   ]);
   assert.equal(results.filter((r) => r.status === "fulfilled").length, 1);
   assert.equal(results.filter((r) => r.status === "rejected").length, 1);
+});
+
+test("obligation: prazo só pelo recebedor e status temporal determinístico", async () => {
+  const { owner, debtor, trip } = await fixture();
+  const created = await createObligation({
+    tripId: trip.id,
+    actorUserId: owner.id,
+    debtorUserId: debtor.id,
+    creditorUserId: owner.id,
+    amountCents: 700,
+  });
+
+  await assert.rejects(() => setDeadline(created.id, debtor.id, "2030-01-01"), ValidationError);
+  await assert.rejects(() => setDeadline(created.id, owner.id, "01/01/2030"), ValidationError);
+  assert.equal(obligationInternals.isDateOnly("2030-01-01"), true);
+  assert.equal(obligationInternals.isDateOnly("2030-02-30"), false);
+
+  const updated = await setDeadline(created.id, owner.id, "2030-01-01");
+  assert.equal(updated.prazo, "2030-01-01");
+  assert.equal(deadlineStatus(updated, new Date("2029-12-31T00:00:00Z")), "no_prazo");
+  assert.equal(deadlineStatus(updated, new Date("2030-01-02T00:00:00Z")), "atrasado");
+
+  const cleared = await clearDeadline(created.id, owner.id);
+  assert.equal(cleared.prazo, null);
+  assert.equal(deadlineStatus(cleared), "sem_prazo");
+});
+
+test("obligation: prazo concluído não pode ser alterado", async () => {
+  const { owner, debtor, trip } = await fixture();
+  const created = await createObligation({
+    tripId: trip.id,
+    actorUserId: owner.id,
+    debtorUserId: debtor.id,
+    creditorUserId: owner.id,
+    amountCents: 700,
+  });
+  await declarePayment(created.id, debtor.id);
+  const completed = await confirmReceipt(created.id, owner.id);
+  assert.equal(deadlineStatus({ estado: completed.estado, prazo: null }), "concluido");
+  await assert.rejects(() => setDeadline(created.id, owner.id, "2030-01-01"), ValidationError);
 });
 
 test("obligation: encerra pool ao final da suíte", async () => {

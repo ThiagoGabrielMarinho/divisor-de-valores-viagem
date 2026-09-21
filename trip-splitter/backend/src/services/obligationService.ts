@@ -105,3 +105,58 @@ export async function listObligations(tripId: string, actorUserId: string) {
   await assertTripMember(tripId, actorUserId);
   return db.select().from(obligations).where(eq(obligations.trip_id, tripId));
 }
+
+function isDateOnly(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+}
+
+export async function setDeadline(
+  obligationId: string,
+  creditorUserId: string,
+  deadline: string
+) {
+  if (!isDateOnly(deadline)) {
+    throw new ValidationError("Prazo inválido. Use o formato AAAA-MM-DD.");
+  }
+  const obligation = await getObligation(obligationId);
+  if (obligation.para_user_id !== creditorUserId) {
+    throw new ValidationError("Apenas o recebedor pode definir o prazo.");
+  }
+  if (obligation.estado === "concluido") {
+    throw new ValidationError("Não é possível alterar o prazo de uma obrigação concluída.");
+  }
+
+  const [updated] = await db.update(obligations)
+    .set({ prazo: deadline })
+    .where(eq(obligations.id, obligationId))
+    .returning();
+  return updated;
+}
+
+export async function clearDeadline(obligationId: string, creditorUserId: string) {
+  const obligation = await getObligation(obligationId);
+  if (obligation.para_user_id !== creditorUserId) {
+    throw new ValidationError("Apenas o recebedor pode alterar o prazo.");
+  }
+  const [updated] = await db.update(obligations)
+    .set({ prazo: null })
+    .where(eq(obligations.id, obligationId))
+    .returning();
+  return updated;
+}
+
+export type DeadlineStatus = "sem_prazo" | "no_prazo" | "atrasado" | "concluido";
+
+export function deadlineStatus(
+  obligation: { estado: string; prazo: string | null },
+  referenceDate: Date = new Date()
+): DeadlineStatus {
+  if (obligation.estado === "concluido") return "concluido";
+  if (!obligation.prazo) return "sem_prazo";
+  const reference = referenceDate.toISOString().slice(0, 10);
+  return reference > obligation.prazo ? "atrasado" : "no_prazo";
+}
+
+export const obligationInternals = { isDateOnly };
