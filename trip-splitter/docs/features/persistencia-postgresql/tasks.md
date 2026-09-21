@@ -123,7 +123,7 @@ T5 -> T6 -> T7
 
 ### T7: Criar índices de acesso
 
-**Status**: Proposed
+**Status**: Done
 **What**: Adicionar os `CREATE INDEX IF NOT EXISTS` para participação (viagem, usuário), despesas (viagem), rateios (despesa) e obrigações (viagem, devedor, recebedor).
 **Where**: `backend/db/schema.sql`
 **Depends on**: T6

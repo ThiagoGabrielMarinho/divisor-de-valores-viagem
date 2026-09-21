@@ -62,3 +62,12 @@ CREATE TABLE IF NOT EXISTS obligations (
   confirmado_em TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- T7: índices de acesso
+CREATE INDEX IF NOT EXISTS idx_memberships_trip ON trip_memberships (trip_id);
+CREATE INDEX IF NOT EXISTS idx_memberships_user ON trip_memberships (user_id);
+CREATE INDEX IF NOT EXISTS idx_expenses_trip ON expenses (trip_id);
+CREATE INDEX IF NOT EXISTS idx_expense_shares_expense ON expense_shares (expense_id);
+CREATE INDEX IF NOT EXISTS idx_obligations_trip ON obligations (trip_id);
+CREATE INDEX IF NOT EXISTS idx_obligations_de ON obligations (de_user_id);
+CREATE INDEX IF NOT EXISTS idx_obligations_para ON obligations (para_user_id);

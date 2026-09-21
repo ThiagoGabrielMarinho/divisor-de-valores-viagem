@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — DB T7: índices de acesso aplicados
+
+- **O que mudou:** adicionados índices idempotentes para memberships, despesas, rateios e obrigações por viagem, devedor e recebedor.
+- **Gate:** SQL aplicado duas vezes no PostgreSQL Aiven e catálogo de índices inspecionado.
+- **Commit:** `feat(db): add access indexes`.
+
 ### 2026-09-20 — DB T6: obrigações com estado e prazo aplicadas
 
 - **O que mudou:** adicionada `obligations` com devedor, recebedor, valor, estados pendente/aguardando_confirmacao/concluido, prazo, confirmação e FKs.
