@@ -185,7 +185,7 @@ T9 -> T10 -> T11 -> T12
 
 ### T11: Tela inicial de resumo global
 
-**Status**: Proposed
+**Status**: Done
 **What**: Criar a tela inicial autenticada que apresenta o resumo global e o acesso às viagens.
 **Where**: `frontend/prototype/app.js`
 **Depends on**: T10

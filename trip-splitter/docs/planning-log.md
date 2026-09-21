@@ -17,6 +17,14 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — PROTO T11: controlador de UI completo
+
+- **O que mudou:** `frontend/prototype/app.js` reescrito como controlador completo (home com resumo global e viagens, tela de viagem com participantes, despesas, obrigações, pagamentos em duas etapas, prazos e reset), usando `render.applyState` para estados verdadeiros. `index.html` ganhou os contêineres de home e da tela de viagem.
+- **Por quê:** conectar todos os módulos simulados em uma jornada navegável.
+- **Arquivos:** `frontend/prototype/app.js`, `frontend/prototype/index.html`, `docs/features/evolucao-conta-compartilhada/tasks.md`.
+- **Gate:** `node --check` verde em todos os JS; integração ponta a ponta verificada em Node (home, obrigação, pagamento, netting). UAT interativa no navegador pendente de execução pelo usuário.
+- **Commit:** `feat(frontend): add global summary home screen`.
+
 ### 2026-09-20 — PROTO T10: resumo global com netting
 
 - **O que mudou:** criado `frontend/prototype/summary.js` com `globalSummaryForUser` (agrega obrigações não concluídas de todas as viagens do usuário por pessoa, aplica netting e ordena por magnitude) e `detailsForPerson` (drill-down). Incluído no `index.html`.

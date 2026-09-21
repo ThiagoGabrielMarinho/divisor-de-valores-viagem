@@ -72,8 +72,94 @@
     </header>
 
     <div id="home-content" class="home-content">
-      <!-- Preenchido pelas tasks de viagens e resumo global. -->
+      <!-- Resumo global -->
+      <section class="card" aria-labelledby="summary-title">
+        <h2 id="summary-title">Quanto você deve e tem a receber</h2>
+        <ul id="summary-list" class="summary-list"></ul>
+        <p id="summary-status" class="status-note hidden"></p>
+      </section>
+
+      <!-- Viagens -->
+      <section class="card" aria-labelledby="trips-title">
+        <div class="card-head">
+          <h2 id="trips-title">Suas viagens</h2>
+        </div>
+        <ul id="trips-list" class="trips-list"></ul>
+        <p id="trips-status" class="status-note hidden"></p>
+
+        <form id="form-new-trip" class="inline-form">
+          <label for="trip-name" class="sr-only">Nome da nova viagem</label>
+          <input id="trip-name" type="text" placeholder="Nome da nova viagem" required />
+          <button type="submit" class="btn-primary">Criar viagem</button>
+        </form>
+      </section>
     </div>
+  </section>
+
+  <!-- Tela: viagem -->
+  <section id="screen-trip" class="screen hidden" aria-labelledby="trip-title">
+    <header class="app-header">
+      <div>
+        <h1 id="trip-title"></h1>
+        <p id="trip-role" class="app-subtitle"></p>
+      </div>
+      <button id="btn-back-home" class="btn-ghost" type="button">← Voltar</button>
+    </header>
+
+    <div class="trip-grid">
+      <!-- Participantes -->
+      <section class="card" aria-labelledby="members-title">
+        <h2 id="members-title">Participantes</h2>
+        <ul id="members-list" class="chips"></ul>
+        <form id="form-add-member" class="inline-form">
+          <label for="member-email" class="sr-only">Email de quem adicionar</label>
+          <input id="member-email" type="email" placeholder="email de um membro já cadastrado" required />
+          <button type="submit">Adicionar</button>
+        </form>
+        <p id="member-hint" class="status-note">Adicione pessoas que já criaram conta nesta simulação.</p>
+      </section>
+
+      <!-- Nova despesa -->
+      <section class="card" aria-labelledby="new-expense-title">
+        <h2 id="new-expense-title">Registrar despesa</h2>
+        <form id="form-add-expense">
+          <label for="expense-desc">Descrição</label>
+          <input id="expense-desc" type="text" placeholder="Ex: Jantar" required />
+
+          <label for="expense-amount">Valor (R$)</label>
+          <input id="expense-amount" type="number" step="0.01" min="0.01" placeholder="0,00" required />
+
+          <label for="expense-payer">Quem pagou</label>
+          <select id="expense-payer" required></select>
+
+          <span class="field-label">Dividir entre</span>
+          <div id="expense-split" class="checkbox-list"></div>
+
+          <button type="submit" class="btn-primary">Adicionar despesa</button>
+        </form>
+      </section>
+    </div>
+
+    <!-- Despesas -->
+    <section class="card" aria-labelledby="expenses-title">
+      <h2 id="expenses-title">Despesas</h2>
+      <ul id="expenses-list" class="expenses-list"></ul>
+      <p id="expenses-status" class="status-note hidden"></p>
+    </section>
+
+    <!-- Obrigações / quitação -->
+    <section class="card" aria-labelledby="obligations-title">
+      <h2 id="obligations-title">Quem paga quem</h2>
+      <ul id="obligations-list" class="obligations-list"></ul>
+      <p id="obligations-status" class="status-note hidden"></p>
+    </section>
+
+    <!-- Reset -->
+    <section class="card danger-zone" aria-labelledby="reset-title">
+      <h2 id="reset-title">Resetar gastos</h2>
+      <p class="status-note">Apaga as despesas e obrigações desta viagem. Bloqueado se já houver pagamento concluído.</p>
+      <button id="btn-reset" class="btn-danger" type="button">Resetar gastos da viagem</button>
+    </section>
   </section>
 
 </main>
