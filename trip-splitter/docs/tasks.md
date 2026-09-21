@@ -79,3 +79,16 @@ Este arquivo mantém o histórico das unidades de trabalho documentais do projet
 **Done when**: spec com requisitos rastreáveis e tasks atômicas de DDL por tabela existem, com dependências, testes, gate, Done when e commit planejado; nenhuma tabela é criada nesta etapa.
 **Commit**: `docs(planning): plan postgresql schema tasks`
 **Commit status**: Created in this commit
+
+## T7: Planejar backend completo da conta compartilhada
+
+**Status**: Done
+**What**: Criar spec, design e tasks para transformar o schema PostgreSQL em backend completo: persistência integrada ao boot, autenticação real, memberships, despesas, obrigações, pagamentos, prazos, reset, resumo global e contratos HTTP.
+**Where**: `docs/features/backend-conta-compartilhada/`
+**Depends on**: T6
+**Requirement**: Planejamento backend após schema PostgreSQL
+**Tests**: validadores estruturais de spec/tasks e revisão do design
+**Gate**: `python .kiro/scripts/validate_spec.py docs/features/backend-conta-compartilhada/spec.md --root .` + `python .kiro/scripts/validate_tasks.py docs/features/backend-conta-compartilhada/tasks.md --root .`
+**Done when**: spec, design e tasks atômicas do backend existem; nenhum comportamento crítico fica sem AC, dependência, teste, gate e commit planejado.
+**Commit**: `docs(planning): plan shared account backend`
+**Commit status**: Created in this commit

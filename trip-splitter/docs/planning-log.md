@@ -17,6 +17,13 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — Planejamento: backend completo da conta compartilhada
+
+- **O que mudou:** criada `docs/features/backend-conta-compartilhada/` com spec, design e 12 tasks de backend (T1–T12), cobrindo alinhamento Drizzle/DDL, migração no boot, autenticação real, sessão, membership, despesas, obrigações, pagamentos, prazos, reset, netting, rotas HTTP, documentação e Verifier.
+- **Por quê:** transformar o schema aplicado em backend completo sem misturar com o protótipo frontend-only.
+- **Gate:** `validate_tasks.py` passou sem erros; `validate_spec.py` passou sem erros com warning explícito de decisões de segurança ainda pendentes.
+- **Commit:** `docs(planning): plan shared account backend`.
+
 ### 2026-09-20 — DB T7: índices de acesso aplicados
 
 - **O que mudou:** adicionados índices idempotentes para memberships, despesas, rateios e obrigações por viagem, devedor e recebedor.
