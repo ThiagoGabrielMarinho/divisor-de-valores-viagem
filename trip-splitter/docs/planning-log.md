@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — DB T4: tabela de despesas aplicada
+
+- **O que mudou:** adicionada `expenses` com valor positivo em centavos, pagador, vínculo à viagem e cascade.
+- **Gate:** SQL aplicado duas vezes no PostgreSQL Aiven.
+- **Commit:** `feat(db): create expenses table`.
+
 ### 2026-09-20 — DB T3: memberships e papéis aplicados
 
 - **O que mudou:** adicionada `trip_memberships` com papéis owner/member, FKs, cascade e unicidade por viagem/usuário.

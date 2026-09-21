@@ -29,3 +29,13 @@ CREATE TABLE IF NOT EXISTS trip_memberships (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   UNIQUE (trip_id, user_id)
 );
+
+-- T4: despesas (valor em centavos > 0), cascade da viagem
+CREATE TABLE IF NOT EXISTS expenses (
+  id TEXT PRIMARY KEY,
+  trip_id TEXT NOT NULL REFERENCES trips(id) ON DELETE CASCADE,
+  descricao TEXT NOT NULL,
+  valor_cents INTEGER NOT NULL CHECK (valor_cents > 0),
+  pago_por TEXT NOT NULL REFERENCES users(id),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);

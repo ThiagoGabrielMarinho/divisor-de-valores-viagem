@@ -87,7 +87,7 @@ T5 -> T6 -> T7
 
 ### T4: Criar tabela de despesas
 
-**Status**: Proposed
+**Status**: Done
 **What**: Adicionar o `CREATE TABLE IF NOT EXISTS expenses` com viagem, descrição, valor em centavos com verificação de positivo, pagador, timestamp e cascade por viagem.
 **Where**: `backend/db/schema.sql`
 **Depends on**: T3
