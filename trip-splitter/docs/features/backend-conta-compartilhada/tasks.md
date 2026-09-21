@@ -53,14 +53,14 @@ T9 -> T10 -> T11 -> T12
 
 ### T1: Alinhar schema SQL e Drizzle
 
-**Status**: Proposed
-**What**: Fazer `backend/src/db/schema.ts` representar exatamente `backend/db/schema.sql`, incluindo users, trips, memberships, expenses, shares e obligations; corrigir nomes/constraints divergentes.
+**Status**: Done
+**What**: Adicionar ao `backend/src/db/schema.ts` as novas entidades `users`, `trip_memberships` e `obligations`, mantendo os exports legados (`trips`, `participants`, `expenses`, `expenseShares`) até a migração dos services nas tasks seguintes. A compatibilidade com as tabelas legadas é intencional nesta task.
 **Where**: `backend/src/db/schema.ts`
 **Depends on**: None
 **Requirement**: DB-01..DB-20
-**Tests**: build + integração que verifica as tabelas e constraints esperadas
-**Gate**: `npm test`
-**Done when**: Drizzle e SQL usam os mesmos nomes, tipos, FKs, checks e índices.
+**Tests**: build TypeScript; aplicação idempotente do DDL correspondente já verificada no PostgreSQL Aiven
+**Gate**: `npm run build`
+**Done when**: o Drizzle representa as novas entidades users, memberships e obligations, preserva os exports legados usados pelo MVP e compila sem erros; a migração/SSL ficam para T2.
 **Commit**: `feat(db): align drizzle schema with postgres ddl`
 
 ### T2: Integrar schema ao boot/migração

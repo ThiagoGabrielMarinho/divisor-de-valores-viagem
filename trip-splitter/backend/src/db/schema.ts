@@ -1,10 +1,12 @@
-import { pgTable, text, integer, serial } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import { pgTable, text, integer, serial, timestamp, index, uniqueIndex, check } from "drizzle-orm/pg-core";
 
-// Nomes de coluna em snake_case propositalmente iguais às chaves usadas nas
-// interfaces de types.ts (Trip, Participant, Expense) e no contrato da API
-// consumido pelo frontend (frontend/app.js). Isso evita uma camada extra de
-// mapeamento entre o resultado do Drizzle e o JSON devolvido nas rotas.
+// O schema mantém os exports legados usados pelo MVP enquanto as tasks do
+// backend migram services e rotas para identidade real. As novas entidades
+// ficam no mesmo catálogo PostgreSQL e serão adotadas pelas próximas tasks.
 
+// Modelo legado do MVP: preservado para não quebrar tripService/expenseService
+// antes da migração de identidade e memberships.
 export const trips = pgTable("trips", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -26,8 +28,6 @@ export const expenses = pgTable("expenses", {
     .notNull()
     .references(() => trips.id, { onDelete: "cascade" }),
   description: text("description").notNull(),
-  // Valores em centavos (inteiro) para não ter erro de arredondamento de
-  // ponto flutuante na divisão igualitária (ver splitEqually em expenseService.ts).
   amount_cents: integer("amount_cents").notNull(),
   paid_by: text("paid_by")
     .notNull()
@@ -45,3 +45,65 @@ export const expenseShares = pgTable("expense_shares", {
     .references(() => participants.id),
   share_cents: integer("share_cents").notNull(),
 });
+
+// Novas entidades do backend de conta compartilhada.
+export const users = pgTable(
+  "users",
+  {
+    id: text("id").primaryKey(),
+    email: text("email").notNull(),
+    senha: text("senha").notNull(),
+    nome: text("nome").notNull(),
+    created_at: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  () => ({})
+);
+
+export const tripMemberships = pgTable(
+  "trip_memberships",
+  {
+    id: text("id").primaryKey(),
+    trip_id: text("trip_id")
+      .notNull()
+      .references(() => trips.id, { onDelete: "cascade" }),
+    user_id: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    papel: text("papel").notNull(),
+    created_at: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    tripUserUnique: uniqueIndex("trip_memberships_trip_id_user_id_key").on(table.trip_id, table.user_id),
+    papelCheck: check("trip_memberships_papel_check", sql`${table.papel} in ('owner', 'member')`),
+    tripIndex: index("idx_memberships_trip").on(table.trip_id),
+    userIndex: index("idx_memberships_user").on(table.user_id),
+  })
+);
+
+export const obligations = pgTable(
+  "obligations",
+  {
+    id: text("id").primaryKey(),
+    trip_id: text("trip_id")
+      .notNull()
+      .references(() => trips.id, { onDelete: "cascade" }),
+    expense_id: text("expense_id").references(() => expenses.id, { onDelete: "set null" }),
+    de_user_id: text("de_user_id").notNull().references(() => users.id),
+    para_user_id: text("para_user_id").notNull().references(() => users.id),
+    valor_cents: integer("valor_cents").notNull(),
+    estado: text("estado").notNull().default("pendente"),
+    prazo: text("prazo"),
+    confirmado_em: timestamp("confirmado_em", { withTimezone: true }),
+    created_at: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    valueCheck: check("obligations_valor_cents_check", sql`${table.valor_cents} > 0`),
+    stateCheck: check(
+      "obligations_estado_check",
+      sql`${table.estado} in ('pendente', 'aguardando_confirmacao', 'concluido')`
+    ),
+    tripIndex: index("idx_obligations_trip").on(table.trip_id),
+    debtorIndex: index("idx_obligations_de").on(table.de_user_id),
+    creditorIndex: index("idx_obligations_para").on(table.para_user_id),
+  })
+);

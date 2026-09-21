@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — Backend T1: schema Drizzle alinhado
+
+- **O que mudou:** `backend/src/db/schema.ts` passou a declarar users, memberships e obligations, mantendo exports legados de trips/participants/expenses/shares para a migração gradual dos services.
+- **Gate:** `npm run build` passou. O DDL foi aplicado duas vezes no Aiven; `npm test` ficou bloqueado pela configuração SSL legada do backend e será resolvido na T2 de boot/migração.
+- **Commit:** `feat(db): align drizzle schema with postgres ddl`.
+
 ### 2026-09-20 — Planejamento: backend completo da conta compartilhada
 
 - **O que mudou:** criada `docs/features/backend-conta-compartilhada/` com spec, design e 12 tasks de backend (T1–T12), cobrindo alinhamento Drizzle/DDL, migração no boot, autenticação real, sessão, membership, despesas, obrigações, pagamentos, prazos, reset, netting, rotas HTTP, documentação e Verifier.
