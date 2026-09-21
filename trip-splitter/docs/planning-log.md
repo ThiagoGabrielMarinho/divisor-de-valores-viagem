@@ -17,6 +17,14 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — PROTO T9: reset com bloqueio e confirmação
+
+- **O que mudou:** criado `frontend/prototype/reset.js` com `canReset` (bloqueia sem owner ou com pagamento concluído) e `resetTripExpenses` (exige confirmação, apaga só a viagem alvo). Incluído no `index.html`.
+- **Por quê:** permitir recomeçar os gastos sem destruir uma viagem que já teve quitação.
+- **Arquivos:** `frontend/prototype/reset.js`, `frontend/prototype/index.html`, `docs/features/evolucao-conta-compartilhada/tasks.md`.
+- **Gate:** `node --check` verde; checagem manual confirmou owner-only, confirmação, isolamento por viagem e bloqueio após pagamento concluído.
+- **Commit:** `feat(frontend): add guarded expense reset`.
+
 ### 2026-09-20 — PROTO T8: prazo por obrigação
 
 - **O que mudou:** criado `frontend/prototype/deadlines.js` com `setDeadline`/`clearDeadline` restritos ao recebedor, `referenceDate`/`setReferenceDate` para data simulada e `deadlineStatus` (sem_prazo, no_prazo, atrasado, concluido). Incluído no `index.html`.

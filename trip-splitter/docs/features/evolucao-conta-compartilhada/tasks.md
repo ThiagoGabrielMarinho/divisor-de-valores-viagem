@@ -161,7 +161,7 @@ T9 -> T10 -> T11 -> T12
 
 ### T9: Reset de gastos com bloqueio e confirmação
 
-**Status**: Proposed
+**Status**: Done
 **What**: Implementar reset do owner que apaga gastos, exige confirmação e é bloqueado quando há pagamento concluído.
 **Where**: `frontend/prototype/reset.js`
 **Depends on**: T8
