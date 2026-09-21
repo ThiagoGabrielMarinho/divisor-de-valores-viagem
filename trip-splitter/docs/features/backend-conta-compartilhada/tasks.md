@@ -100,14 +100,14 @@ T9 -> T10 -> T11 -> T12
 
 ### T5: Proteger rotas e memberships
 
-**Status**: Proposed
+**Status**: Done
 **What**: Adicionar middleware de sessão e autorização owner/member em todas as operações de viagem.
 **Where**: `backend/src/middleware/auth.ts`
 **Depends on**: T4
 **Requirement**: API-03..API-05, API-07..API-09
 **Tests**: HTTP 401, 403, membership válida, owner/member e isolamento
 **Gate**: `npm test`
-**Done when**: UUID sozinho não contorna autorização e papéis restringem ações.
+**Done when**: o middleware resolve Bearer/cookie, retorna 401 sem sessão, 403 sem membership/role e anexa contexto autorizado ao request; a aplicação das rotas fica para T11.
 **Commit**: `feat(auth): protect trip routes by membership`
 
 ### T6: Adaptar viagens e despesas ao usuário real

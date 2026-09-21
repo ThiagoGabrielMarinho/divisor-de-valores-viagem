@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — Backend T5: middleware de sessão e membership
+
+- **O que mudou:** criado `middleware/auth.ts` com extração de Bearer/cookie, `requireSession` (401) e `requireTripMembership` (403 por membership/role), além de testes integrados.
+- **Gate:** `npm test` no Aiven: build, migração e 21/21 testes passaram.
+- **Commit:** `feat(auth): protect trip routes by membership`.
+
 ### 2026-09-20 — Backend T4: sessão persistida e logout
 
 - **O que mudou:** adicionada tabela `sessions` com token hash, expiração e revogação; `authService` ganhou criação, consulta e revogação de sessão usando SHA-256 para o token persistido; testes de sessão foram adicionados.
