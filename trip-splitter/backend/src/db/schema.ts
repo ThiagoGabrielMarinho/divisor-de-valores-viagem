@@ -19,6 +19,7 @@ export const participants = pgTable("participants", {
   trip_id: text("trip_id")
     .notNull()
     .references(() => trips.id, { onDelete: "cascade" }),
+  user_id: text("user_id"),
   name: text("name").notNull(),
 });
 

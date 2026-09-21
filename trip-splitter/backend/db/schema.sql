@@ -49,8 +49,16 @@ END $$;
 CREATE TABLE IF NOT EXISTS participants (
   id TEXT PRIMARY KEY,
   trip_id TEXT NOT NULL REFERENCES trips(id) ON DELETE CASCADE,
+  user_id TEXT REFERENCES users(id) ON DELETE SET NULL,
   name TEXT NOT NULL
 );
+
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='participants' AND column_name='user_id') THEN
+    ALTER TABLE participants ADD COLUMN user_id TEXT REFERENCES users(id) ON DELETE SET NULL;
+  END IF;
+END $$;
 
 -- T3: participação de contas (papéis owner/member), única por viagem/usuário.
 CREATE TABLE IF NOT EXISTS trip_memberships (

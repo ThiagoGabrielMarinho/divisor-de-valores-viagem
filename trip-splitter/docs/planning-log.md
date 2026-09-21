@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — Backend T6: viagens e despesas ligadas a usuários
+
+- **O que mudou:** participantes ganharam `user_id`; `tripService` ganhou criação autenticada como owner, adição de member e verificação de membership; `expenseService` aceita `actorUserId` e rejeita registro sem membership; testes integrados foram adicionados.
+- **Gate:** `npm test` no Aiven: build, migração e 25/25 testes passaram.
+- **Commit:** `feat(expenses): persist authorized user expenses`.
+
 ### 2026-09-20 — Backend T5: middleware de sessão e membership
 
 - **O que mudou:** criado `middleware/auth.ts` com extração de Bearer/cookie, `requireSession` (401) e `requireTripMembership` (403 por membership/role), além de testes integrados.

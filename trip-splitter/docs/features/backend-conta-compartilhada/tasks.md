@@ -112,14 +112,13 @@ T9 -> T10 -> T11 -> T12
 
 ### T6: Adaptar viagens e despesas ao usuário real
 
-**Status**: Proposed
-**What**: Adaptar services de viagem/despesa para users/memberships reais, mantendo transação de expense + shares.
-**Where**: `backend/src/services/expenseService.ts`
-**Depends on**: T5
+**Status**: Done
+**What**: Ligar participantes a usuários por `user_id`, criar criação de viagem/membership autenticada e exigir membership do ator ao registrar despesas, mantendo compatibilidade das APIs legadas até T11.
+**Where**: `backend/src/services/tripService.ts`, `backend/src/services/expenseService.ts`, `backend/src/db/schema.ts`, `backend/db/schema.sql`, `backend/src/tests/user-trip-expense.test.ts`
 **Requirement**: API-07..API-12
 **Tests**: criação autorizada, membership, validações, atomicidade e valores em centavos
 **Gate**: `npm test`
-**Done when**: despesas são gravadas para viagem autorizada com pagador/membros existentes.
+**Done when**: usuários autenticados possuem participante/membership, owner cria e adiciona member, o ator deve ser membro ao registrar despesa e a transação legado de expense + shares continua passando.
 **Commit**: `feat(expenses): persist authorized user expenses`
 
 ### T7: Implementar obrigações e transições de pagamento

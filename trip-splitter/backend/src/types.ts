@@ -24,6 +24,7 @@ export interface Trip {
 export interface Participant {
   id: string;
   trip_id: string;
+  user_id?: string | null;
   name: string;
 }
 

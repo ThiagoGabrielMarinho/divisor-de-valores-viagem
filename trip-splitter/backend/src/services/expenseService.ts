@@ -3,13 +3,14 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "../db";
 import { expenses, expenseShares, participants } from "../db/schema";
 import { Expense, ValidationError } from "../types";
-import { getTrip } from "./tripService";
+import { getTrip, isTripMember } from "./tripService";
 
 interface AddExpenseInput {
   description: string;
   amountCents: number;
   paidBy: string;
   splitAmong: string[]; // participant ids
+  actorUserId?: string; // usuário autenticado; legado pode omitir até T11
 }
 
 // R4: divisão igualitária com distribuição do resto (centavos) aos primeiros da lista
@@ -28,6 +29,9 @@ export function splitEqually(amountCents: number, splitAmong: string[]): Map<str
 // R3 + R8: registrar despesa com validação
 export async function addExpense(tripId: string, input: AddExpenseInput): Promise<Expense> {
   await getTrip(tripId);
+  if (input.actorUserId && !(await isTripMember(tripId, input.actorUserId))) {
+    throw new ValidationError("Usuário não participa desta viagem.");
+  }
 
   const description = (input.description || "").trim();
   if (!description) throw new ValidationError("Descrição é obrigatória.");
