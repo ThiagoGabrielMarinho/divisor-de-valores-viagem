@@ -17,6 +17,14 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — PROTO T8: prazo por obrigação
+
+- **O que mudou:** criado `frontend/prototype/deadlines.js` com `setDeadline`/`clearDeadline` restritos ao recebedor, `referenceDate`/`setReferenceDate` para data simulada e `deadlineStatus` (sem_prazo, no_prazo, atrasado, concluido). Incluído no `index.html`.
+- **Por quê:** dar ao credor o controle do prazo e derivar atraso de forma determinística.
+- **Arquivos:** `frontend/prototype/deadlines.js`, `frontend/prototype/index.html`, `docs/features/evolucao-conta-compartilhada/tasks.md`.
+- **Gate:** `node --check` verde; checagem manual confirmou papel, limites do dia, data inválida e obrigação concluída.
+- **Commit:** `feat(frontend): add per-obligation deadlines`.
+
 ### 2026-09-20 — PROTO T7: pagamento em duas etapas
 
 - **O que mudou:** criado `frontend/prototype/payments.js` com `declarePayment` (devedor), `confirmReceipt` (recebedor), `rejectDeclaration` (recebedor) e `pendingBalanceForUser`, aplicando as transições pendente → aguardando_confirmacao → concluido e a regra de que concluído sai do saldo pendente. Incluído no `index.html`.

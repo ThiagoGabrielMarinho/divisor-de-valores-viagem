@@ -149,7 +149,7 @@ T9 -> T10 -> T11 -> T12
 
 ### T8: Prazo por obrigação definido pelo recebedor
 
-**Status**: Proposed
+**Status**: Done
 **What**: Permitir que o recebedor defina prazo por obrigação e exibir dentro do prazo, atrasado ou sem prazo conforme a data de referência simulada.
 **Where**: `frontend/prototype/deadlines.js`
 **Depends on**: T7
