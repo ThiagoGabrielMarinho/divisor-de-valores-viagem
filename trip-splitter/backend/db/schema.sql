@@ -11,3 +11,11 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS ux_users_email_lower ON users (lower(email));
+
+-- T2: viagens
+CREATE TABLE IF NOT EXISTS trips (
+  id TEXT PRIMARY KEY,
+  nome TEXT NOT NULL,
+  moeda TEXT NOT NULL DEFAULT 'BRL',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);

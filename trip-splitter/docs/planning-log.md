@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — DB T2: tabela de viagens aplicada
+
+- **O que mudou:** adicionada `trips` ao `backend/db/schema.sql`, com moeda default BRL e timestamps.
+- **Gate:** SQL aplicado duas vezes no PostgreSQL Aiven; idempotência confirmada.
+- **Commit:** `feat(db): create trips table`.
+
 ### 2026-09-20 — DB T1: tabela de usuários aplicada
 
 - **O que mudou:** criado o primeiro bloco de `backend/db/schema.sql` com `users` e índice único case-insensitive para email.

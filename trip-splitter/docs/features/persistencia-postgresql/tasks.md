@@ -63,7 +63,7 @@ T5 -> T6 -> T7
 
 ### T2: Criar tabela de viagens
 
-**Status**: Proposed
+**Status**: Done
 **What**: Adicionar o `CREATE TABLE IF NOT EXISTS trips` com id, nome, moeda com default `BRL` e timestamp de criação.
 **Where**: `backend/db/schema.sql`
 **Depends on**: T1
