@@ -77,9 +77,9 @@ T9 -> T10 -> T11 -> T12
 
 ### T3: Implementar usuários e hash de senha
 
-**Status**: Proposed
-**What**: Criar service de usuários com cadastro, email case-insensitive e hash seguro; remover dependência de senha em texto.
-**Where**: `backend/src/services/authService.ts`
+**Status**: Done
+**What**: Criar service de usuários com email case-insensitive e hash seguro via `crypto.scrypt`; o campo legado `users.senha` armazenará somente o hash nesta task. Nenhuma senha em texto será persistida.
+**Where**: `backend/src/services/authService.ts`, `backend/src/tests/auth.test.ts`
 **Depends on**: T2
 **Requirement**: API-01, API-02
 **Tests**: unit/integration de cadastro, duplicidade, hash e mensagens neutras

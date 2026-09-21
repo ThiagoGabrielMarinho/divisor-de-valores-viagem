@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — Backend T3: cadastro e hash scrypt
+
+- **O que mudou:** criado `authService.ts` com cadastro, normalização de email, duplicidade neutra, hash scrypt nativo e autenticação; criado `auth.test.ts` com 4 testes de hash/auth. O campo legado `users.senha` armazena somente o hash nesta etapa.
+- **Gate:** `npm test` no Aiven: build, migração e 13/13 testes passaram.
+- **Commit:** `feat(auth): add secure user registration`.
+
 ### 2026-09-20 — Backend T2: schema integrado ao boot
 
 - **O que mudou:** `migrate.ts` passou a ler `backend/db/schema.sql`; `db/index.ts` normaliza `sslmode=require` e configura SSL gerenciado sem segredo hardcoded; o SQL ganhou compatibilidade idempotente para colunas/tabelas legadas do MVP.
