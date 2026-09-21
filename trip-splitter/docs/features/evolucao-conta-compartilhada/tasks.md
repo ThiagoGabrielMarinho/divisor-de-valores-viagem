@@ -113,7 +113,7 @@ T9 -> T10 -> T11 -> T12
 
 ### T5: Registrar despesas e gerar obrigações
 
-**Status**: Proposed
+**Status**: Done
 **What**: Registrar despesas na viagem e derivar as obrigações entre participantes no estado simulado.
 **Where**: `frontend/prototype/expenses.js`
 **Depends on**: T4

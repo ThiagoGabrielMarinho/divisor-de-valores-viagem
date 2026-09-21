@@ -17,6 +17,14 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — PROTO T5: despesas e obrigações derivadas
+
+- **O que mudou:** criado `frontend/prototype/expenses.js` com registro de despesa, divisão igualitária em centavos (resto aos primeiros) e derivação de obrigações (cada devedor deve sua parte ao pagador). Incluído no `index.html`.
+- **Por quê:** transformar despesas em dívidas rastreáveis para pagamento, prazo e resumo.
+- **Arquivos:** `frontend/prototype/expenses.js`, `frontend/prototype/index.html`, `docs/features/evolucao-conta-compartilhada/tasks.md`.
+- **Gate:** `node --check` verde; checagem manual confirmou split 34/33/33, obrigações sem o pagador, soma coerente, estado pendente e validações.
+- **Commit:** `feat(frontend): record expenses and derive obligations`.
+
 ### 2026-09-20 — PROTO T4: viagens por usuário com papéis
 
 - **O que mudou:** criado `frontend/prototype/trips.js` com criação de viagem (criador vira owner), listagem restrita ao usuário logado, acesso com verificação de membership, adição de membro (member por padrão) e helpers de papel. `trips.js` foi incluído no `index.html` antes do `app.js`.
