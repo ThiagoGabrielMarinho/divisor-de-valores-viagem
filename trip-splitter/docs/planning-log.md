@@ -17,6 +17,14 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — PROTO T13: layout da seção de reset
+
+- **O que mudou:** a seção de resetar gastos foi redesenhada em `index.html` e `prototype.css` com ícone, título, descrição e botão alinhados, faixa lateral de risco e responsividade; a classe antiga `danger-zone` foi substituída por `reset-card`.
+- **Por quê:** o layout do reset estava feio e inconsistente com o restante.
+- **Arquivos:** `frontend/prototype/prototype.css`, `frontend/prototype/index.html`, `docs/features/evolucao-conta-compartilhada/tasks.md`.
+- **Gate:** consistência de classes verificada (CSS/HTML) e sem resíduo de `danger-zone`; UAT visual pendente de execução pelo usuário.
+- **Commit:** `style(frontend): refine reset section layout`.
+
 ### 2026-09-20 — PROTO T12: redesign clean, claro e responsivo
 
 - **O que mudou:** `frontend/prototype/prototype.css` reescrito como sistema visual moderno em modo claro exclusivo, com tokens de cor, hierarquia, cartões, botões (primário, ghost, small, danger), listas de resumo/viagens/despesas/obrigações, chips, checkbox de divisão, zona de risco do reset, foco visível, contraste, `sr-only` e responsividade (grid da viagem colapsa, header empilha, obrigações em coluna no mobile).

@@ -155,10 +155,15 @@
     </section>
 
     <!-- Reset -->
-    <section class="card danger-zone" aria-labelledby="reset-title">
-      <h2 id="reset-title">Resetar gastos</h2>
-      <p class="status-note">Apaga as despesas e obrigações desta viagem. Bloqueado se já houver pagamento concluído.</p>
-      <button id="btn-reset" class="btn-danger" type="button">Resetar gastos da viagem</button>
+    <section class="card reset-card" aria-labelledby="reset-title">
+      <div class="reset-info">
+        <span class="reset-icon" aria-hidden="true">↺</span>
+        <div>
+          <h2 id="reset-title">Resetar gastos</h2>
+          <p class="reset-desc">Apaga todas as despesas e cobranças desta viagem para começar de novo. Fica indisponível quando já existe um pagamento concluído.</p>
+        </div>
+      </div>
+      <button id="btn-reset" class="btn-danger" type="button">Resetar gastos</button>
     </section>
   </section>
 

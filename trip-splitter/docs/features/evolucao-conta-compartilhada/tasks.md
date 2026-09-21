@@ -207,6 +207,30 @@ T9 -> T10 -> T11 -> T12
 **Done when**: as telas são clean, legíveis, responsivas e acessíveis em modo claro.
 **Commit**: `style(frontend): modernize light prototype experience`
 
+### T13: Melhorar o layout de resetar gastos
+
+**Status**: Done
+**What**: Redesenhar a seção de reset de gastos para uma apresentação clean e clara, coerente com o sistema visual, com hierarquia e ação de risco bem sinalizada sem ficar feia.
+**Where**: `frontend/prototype/prototype.css`
+**Depends on**: T12
+**Requirement**: PROTO-35, PROTO-37
+**Tests**: UAT visual da seção de reset em desktop e mobile, incluindo o estado desabilitado
+**Gate**: UAT
+**Done when**: a seção de reset fica visualmente consistente e legível, com o botão de risco claro e o estado bloqueado compreensível.
+**Commit**: `style(frontend): refine reset section layout`
+
+### T14: Remover mensagens de simulação
+
+**Status**: Proposed
+**What**: Remover os avisos e textos que indicam explicitamente que o cadastro/login/dados são uma simulação, na interface e nas mensagens do fluxo.
+**Where**: `frontend/prototype/index.html`
+**Depends on**: T13
+**Requirement**: PROTO-36
+**Tests**: UAT confirmando que nenhum aviso de simulação aparece nas telas ou toasts
+**Gate**: UAT
+**Done when**: a interface não exibe mais banners, textos ou toasts dizendo que é simulação.
+**Commit**: `refactor(frontend): remove simulation notices`
+
 ## Task Integrity Rules
 
 - Nenhuma task altera `backend/`, schema ou contrato de API; a feature é frontend-only.
