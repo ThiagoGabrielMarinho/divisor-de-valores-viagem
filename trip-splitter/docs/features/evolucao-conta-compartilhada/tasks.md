@@ -125,7 +125,7 @@ T9 -> T10 -> T11 -> T12
 
 ### T6: Renderizar estados verdadeiros de despesas e quitação
 
-**Status**: Proposed
+**Status**: Done
 **What**: Exibir listas com dados, vazio verdadeiro, erro e indisponibilidade sem mensagens falsas.
 **Where**: `frontend/prototype/render.js`
 **Depends on**: T5

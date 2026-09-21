@@ -17,6 +17,14 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — PROTO T6: estados verdadeiros de renderização
+
+- **O que mudou:** criado `frontend/prototype/render.js` com `decideState` puro (loading, error, unavailable, empty, data), mensagens por seção e `applyState` para o DOM. Erro e ausência de dados nunca são tratados como "vazio". Incluído no `index.html`.
+- **Por quê:** impedir que a interface mostre "nenhuma despesa" ou "tudo quitado" quando há dados ou falha.
+- **Arquivos:** `frontend/prototype/render.js`, `frontend/prototype/index.html`, `docs/features/evolucao-conta-compartilhada/tasks.md`.
+- **Gate:** `node --check` verde; checagem manual confirmou precedência de erro/indisponível sobre vazio e vazio só com lista vazia.
+- **Commit:** `fix(frontend): render truthful expense states`.
+
 ### 2026-09-20 — PROTO T5: despesas e obrigações derivadas
 
 - **O que mudou:** criado `frontend/prototype/expenses.js` com registro de despesa, divisão igualitária em centavos (resto aos primeiros) e derivação de obrigações (cada devedor deve sua parte ao pagador). Incluído no `index.html`.
