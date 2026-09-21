@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — DB T6: obrigações com estado e prazo aplicadas
+
+- **O que mudou:** adicionada `obligations` com devedor, recebedor, valor, estados pendente/aguardando_confirmacao/concluido, prazo, confirmação e FKs.
+- **Gate:** SQL aplicado duas vezes no PostgreSQL Aiven; idempotência confirmada.
+- **Commit:** `feat(db): create obligations table`.
+
 ### 2026-09-20 — DB T5: tabela de rateios aplicada
 
 - **O que mudou:** adicionada `expense_shares` com participante, valor em centavos e cascade da despesa.

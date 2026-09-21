@@ -111,7 +111,7 @@ T5 -> T6 -> T7
 
 ### T6: Criar tabela de obrigações com estado e prazo
 
-**Status**: Proposed
+**Status**: Done
 **What**: Adicionar o `CREATE TABLE IF NOT EXISTS obligations` com viagem, devedor, recebedor, valor em centavos, estado restrito, prazo opcional, momento de confirmação e cascade por viagem.
 **Where**: `backend/db/schema.sql`
 **Depends on**: T5

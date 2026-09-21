@@ -47,3 +47,18 @@ CREATE TABLE IF NOT EXISTS expense_shares (
   participant_id TEXT NOT NULL REFERENCES users(id),
   share_cents INTEGER NOT NULL CHECK (share_cents >= 0)
 );
+
+-- T6: obrigações com estado (pagamento em duas etapas), prazo e confirmação
+CREATE TABLE IF NOT EXISTS obligations (
+  id TEXT PRIMARY KEY,
+  trip_id TEXT NOT NULL REFERENCES trips(id) ON DELETE CASCADE,
+  expense_id TEXT REFERENCES expenses(id) ON DELETE SET NULL,
+  de_user_id TEXT NOT NULL REFERENCES users(id),
+  para_user_id TEXT NOT NULL REFERENCES users(id),
+  valor_cents INTEGER NOT NULL CHECK (valor_cents > 0),
+  estado TEXT NOT NULL DEFAULT 'pendente'
+    CHECK (estado IN ('pendente', 'aguardando_confirmacao', 'concluido')),
+  prazo DATE,
+  confirmado_em TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
