@@ -75,7 +75,7 @@ T5 -> T6 -> T7
 
 ### T3: Criar tabela de participação com papéis
 
-**Status**: Proposed
+**Status**: Done
 **What**: Adicionar o `CREATE TABLE IF NOT EXISTS trip_memberships` com viagem, usuário, papel restrito a `owner`/`member`, FKs e unicidade `(trip_id, user_id)`.
 **Where**: `backend/db/schema.sql`
 **Depends on**: T2

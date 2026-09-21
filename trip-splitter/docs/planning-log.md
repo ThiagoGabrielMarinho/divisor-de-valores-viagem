@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — DB T3: memberships e papéis aplicados
+
+- **O que mudou:** adicionada `trip_memberships` com papéis owner/member, FKs, cascade e unicidade por viagem/usuário.
+- **Gate:** SQL aplicado duas vezes no PostgreSQL Aiven; constraints e idempotência passaram.
+- **Commit:** `feat(db): create trip memberships table`.
+
 ### 2026-09-20 — DB T2: tabela de viagens aplicada
 
 - **O que mudou:** adicionada `trips` ao `backend/db/schema.sql`, com moeda default BRL e timestamps.
