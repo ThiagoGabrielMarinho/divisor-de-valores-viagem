@@ -17,6 +17,14 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — Planejamento: schema PostgreSQL
+
+- **O que mudou:** criada a feature de planejamento `docs/features/persistencia-postgresql/` com `spec.md` (20 ACs, DB-01..DB-20) e `tasks.md` (T1–T7, DDL por tabela + índices), definindo as tabelas PostgreSQL do domínio validado no protótipo: users, trips, trip_memberships, expenses, expense_shares e obligations (com estado, prazo e confirmação). Nenhuma tabela foi criada; é só planejamento.
+- **Por quê:** preparar a persistência real que sustenta a evolução de conta compartilhada, com valores em centavos, moeda BRL, papéis e estados por constraint, e DDL idempotente.
+- **Arquivos:** `docs/features/persistencia-postgresql/spec.md`, `docs/features/persistencia-postgresql/tasks.md`, `docs/tasks.md`.
+- **Gate:** `validate_spec.py` e `validate_tasks.py` sem erros nem warnings.
+- **Commit:** `docs(planning): plan postgresql schema tasks`.
+
 ### 2026-09-20 — PROTO T14: remoção das mensagens de simulação
 
 - **O que mudou:** removidos os textos visíveis que diziam que era simulação: banner do topo, placeholder "senha simulada", hint dos participantes, greeting da home e toasts (login, cadastro, logout, reset de estado). Mensagens de erro do `auth.js`/`trips.js` foram neutralizadas e a constante `SIMULATION_NOTICE` (não usada) foi removida. Comentários internos de código não foram alterados por não serem visíveis ao usuário.

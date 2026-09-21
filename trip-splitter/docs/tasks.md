@@ -66,3 +66,16 @@ Este arquivo mantém o histórico das unidades de trabalho documentais do projet
 **Done when**: cada task PROTO aponta para `frontend/prototype/` e usa um gate que realmente verifica o artefato, sem alterar backend.
 **Commit**: `docs(planning): use honest frontend gate for prototype`
 **Commit status**: Created in this commit
+
+## T6: Planejar schema PostgreSQL da conta compartilhada
+
+**Status**: Done
+**What**: Criar spec e tasks de uma feature de persistência que define os comandos SQL para criar as tabelas PostgreSQL necessárias ao domínio validado no protótipo (usuários, viagens, membros/papéis, despesas, rateios, obrigações com estado, prazo e pagamento em duas etapas). Somente planejamento nesta etapa; sem implementar.
+**Where**: `docs/features/persistencia-postgresql/`
+**Depends on**: T3
+**Requirement**: Planejamento do banco que sustenta a evolução de conta compartilhada
+**Tests**: validadores estruturais de spec/tasks
+**Gate**: `python .kiro/scripts/validate_spec.py docs/features/persistencia-postgresql/spec.md --root .` + `python .kiro/scripts/validate_tasks.py docs/features/persistencia-postgresql/tasks.md --root .`
+**Done when**: spec com requisitos rastreáveis e tasks atômicas de DDL por tabela existem, com dependências, testes, gate, Done when e commit planejado; nenhuma tabela é criada nesta etapa.
+**Commit**: `docs(planning): plan postgresql schema tasks`
+**Commit status**: Created in this commit
