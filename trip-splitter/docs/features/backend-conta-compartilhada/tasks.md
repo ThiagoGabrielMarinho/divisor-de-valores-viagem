@@ -123,14 +123,14 @@ T9 -> T10 -> T11 -> T12
 
 ### T7: Implementar obrigações e transições de pagamento
 
-**Status**: Proposed
+**Status**: Done
 **What**: Criar service de obrigações com pendente, declaração pelo devedor, confirmação/recusa pelo recebedor e transições idempotentes.
 **Where**: `backend/src/services/obligationService.ts`
 **Depends on**: T6
 **Requirement**: API-13..API-17
 **Tests**: estados válidos/inválidos, papéis, confirmação concorrente e saldo pendente
 **Gate**: `npm test`
-**Done when**: apenas o recebedor conclui e cada transição gera estado persistido consistente.
+**Done when**: apenas o recebedor conclui, transições são condicionais/idempotentes e confirmações concorrentes não produzem dupla conclusão.
 **Commit**: `feat(payments): implement obligation state transitions`
 
 ### T8: Implementar prazos

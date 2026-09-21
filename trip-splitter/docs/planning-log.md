@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — Backend T7: obrigações e pagamentos
+
+- **O que mudou:** criado `obligationService.ts` com criação autorizada, declaração pelo devedor, confirmação/recusa pelo recebedor, estados persistidos e updates condicionais; adicionados testes de papéis e concorrência.
+- **Gate:** `npm test` no Aiven: build, migração e 29/29 testes passaram.
+- **Commit:** `feat(payments): implement obligation state transitions`.
+
 ### 2026-09-20 — Backend T6: viagens e despesas ligadas a usuários
 
 - **O que mudou:** participantes ganharam `user_id`; `tripService` ganhou criação autenticada como owner, adição de member e verificação de membership; `expenseService` aceita `actorUserId` e rejeita registro sem membership; testes integrados foram adicionados.
