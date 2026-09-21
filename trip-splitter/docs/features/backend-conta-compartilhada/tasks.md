@@ -65,14 +65,14 @@ T9 -> T10 -> T11 -> T12
 
 ### T2: Integrar schema ao boot/migração
 
-**Status**: Proposed
-**What**: Fazer `runMigrations()` aplicar o schema real idempotente no boot e manter comando manual, sem credenciais hardcoded.
-**Where**: `backend/src/db/migrate.ts`
+**Status**: Done
+**What**: Fazer `runMigrations()` aplicar o schema real idempotente no boot e manter comando manual, normalizar SSL gerenciado sem credenciais hardcoded e preservar as tabelas legadas necessárias ao MVP.
+**Where**: `backend/src/db/migrate.ts`, `backend/src/db/index.ts`, `backend/db/schema.sql`
 **Depends on**: T1
 **Requirement**: DB-01..DB-20
 **Tests**: banco vazio, aplicação repetida e banco já criado
 **Gate**: `npm test`
-**Done when**: boot e `db:migrate` criam/reaplicam todas as tabelas sem apagar dados.
+**Done when**: boot e `db:migrate` criam/reaplicam todas as tabelas sem apagar dados; a URL com SSL gerenciado funciona sem credenciais hardcoded e a suíte existente passa.
 **Commit**: `feat(db): run shared schema migration on boot`
 
 ### T3: Implementar usuários e hash de senha

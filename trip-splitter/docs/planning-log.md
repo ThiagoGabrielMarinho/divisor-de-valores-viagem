@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — Backend T2: schema integrado ao boot
+
+- **O que mudou:** `migrate.ts` passou a ler `backend/db/schema.sql`; `db/index.ts` normaliza `sslmode=require` e configura SSL gerenciado sem segredo hardcoded; o SQL ganhou compatibilidade idempotente para colunas/tabelas legadas do MVP.
+- **Gate:** `npm test` no PostgreSQL Aiven: build, migração e 8/8 testes passaram.
+- **Commit:** `feat(db): run shared schema migration on boot`.
+
 ### 2026-09-20 — Backend T1: schema Drizzle alinhado
 
 - **O que mudou:** `backend/src/db/schema.ts` passou a declarar users, memberships e obligations, mantendo exports legados de trips/participants/expenses/shares para a migração gradual dos services.

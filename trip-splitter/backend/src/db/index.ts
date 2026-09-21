@@ -5,9 +5,9 @@ import * as schema from "./schema";
 
 const { Pool } = pg;
 
-const connectionString = process.env.DATABASE_URL;
+const configuredConnectionString = process.env.DATABASE_URL;
 
-if (!connectionString) {
+if (!configuredConnectionString) {
   throw new Error(
     "DATABASE_URL não foi definida nas variáveis de ambiente. " +
       "No Render, configure-a nas Environment Variables do Web Service " +
@@ -16,8 +16,16 @@ if (!connectionString) {
   );
 }
 
-// Bancos gerenciados (Render, Neon, Supabase etc.) exigem SSL. Em Postgres
-// local (docker/localhost) normalmente não há SSL configurado.
+// O pg interpreta `sslmode=require` da URL e pode sobrescrever o objeto SSL
+// abaixo. Removemos apenas esse parâmetro e configuramos SSL explicitamente,
+// necessário para bancos gerenciados cujo certificado não está na trust store
+// local. A connection string continua vindo exclusivamente do ambiente.
+const connectionString = configuredConnectionString
+  .replace(/[?&]sslmode=require\b/, "")
+  .replace(/[?&]$/, "");
+
+// Bancos gerenciados (Render, Neon, Supabase, Aiven etc.) exigem SSL.
+// Em Postgres local (docker/localhost) normalmente não há SSL configurado.
 const isLocal = /localhost|127\.0\.0\.1/.test(connectionString);
 
 export const pool = new Pool({
