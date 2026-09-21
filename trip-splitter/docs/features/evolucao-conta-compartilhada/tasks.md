@@ -173,7 +173,7 @@ T9 -> T10 -> T11 -> T12
 
 ### T10: Resumo global com netting
 
-**Status**: Proposed
+**Status**: Done
 **What**: Consolidar por pessoa o quanto o usuário deve ou tem a receber, com netting e detalhamento por viagem, ignorando obrigações concluídas.
 **Where**: `frontend/prototype/summary.js`
 **Depends on**: T9

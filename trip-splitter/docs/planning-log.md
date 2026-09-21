@@ -17,6 +17,14 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — PROTO T10: resumo global com netting
+
+- **O que mudou:** criado `frontend/prototype/summary.js` com `globalSummaryForUser` (agrega obrigações não concluídas de todas as viagens do usuário por pessoa, aplica netting e ordena por magnitude) e `detailsForPerson` (drill-down). Incluído no `index.html`.
+- **Por quê:** responder "quanto devo/tenho a receber de cada pessoa" no total, com valor líquido.
+- **Arquivos:** `frontend/prototype/summary.js`, `frontend/prototype/index.html`, `docs/features/evolucao-conta-compartilhada/tasks.md`.
+- **Gate:** `node --check` verde; checagem manual confirmou netting entre viagens, detalhamento, recálculo ao concluir e resumo vazio quando quites.
+- **Commit:** `feat(frontend): add netted global debt summary`.
+
 ### 2026-09-20 — PROTO T9: reset com bloqueio e confirmação
 
 - **O que mudou:** criado `frontend/prototype/reset.js` com `canReset` (bloqueia sem owner ou com pagamento concluído) e `resetTripExpenses` (exige confirmação, apaga só a viagem alvo). Incluído no `index.html`.
