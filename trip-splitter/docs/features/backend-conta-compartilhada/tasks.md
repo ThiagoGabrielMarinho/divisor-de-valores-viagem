@@ -135,7 +135,7 @@ T9 -> T10 -> T11 -> T12
 
 ### T8: Implementar prazos
 
-**Status**: Proposed
+**Status**: In Progress
 **What**: Permitir ao recebedor definir prazo por obrigação e consultar status temporal.
 **Where**: `backend/src/services/obligationService.ts`
 **Depends on**: T7
@@ -200,3 +200,15 @@ T9 -> T10 -> T11 -> T12
 - Cada task concluída recebe exatamente um commit local.
 - Tasks concluídas permanecem neste arquivo.
 - Push, deploy e banco de produção exigem autorização separada.
+
+### T13: Estabilizar execução sequencial da suíte PostgreSQL
+
+**Status**: Done
+**What**: Configurar o runner `node:test` para executar os arquivos de teste do backend sequencialmente, evitando corrida no pool compartilhado e mantendo o gate determinístico.
+**Where**: `backend/package.json`
+**Depends on**: None
+**Requirement**: confiabilidade dos gates de todas as tasks backend
+**Tests**: `npm test` com todos os arquivos da suíte
+**Gate**: `npm test`
+**Done when**: a suíte completa executa sem concorrência entre arquivos que encerram o pool, mantendo todas as asserções verdes.
+**Commit**: `test(backend): run database suite sequentially`

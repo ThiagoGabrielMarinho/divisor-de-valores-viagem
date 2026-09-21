@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — Backend T13: suíte PostgreSQL sequencial
+
+- **O que mudou:** `backend/package.json` passou a executar `node:test` com `--test-concurrency=1`, evitando corrida entre arquivos que encerram o pool compartilhado.
+- **Gate:** `npm test` no Aiven: build, migração e 31/31 testes passaram.
+- **Commit:** `test(backend): run database suite sequentially`.
+
 ### 2026-09-20 — Backend T7: obrigações e pagamentos
 
 - **O que mudou:** criado `obligationService.ts` com criação autorizada, declaração pelo devedor, confirmação/recusa pelo recebedor, estados persistidos e updates condicionais; adicionados testes de papéis e concorrência.

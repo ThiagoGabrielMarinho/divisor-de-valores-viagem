@@ -92,3 +92,16 @@ Este arquivo mantém o histórico das unidades de trabalho documentais do projet
 **Done when**: spec, design e tasks atômicas do backend existem; nenhum comportamento crítico fica sem AC, dependência, teste, gate e commit planejado.
 **Commit**: `docs(planning): plan shared account backend`
 **Commit status**: Created in this commit
+
+## T8: Estabilizar gate da suíte backend PostgreSQL
+
+**Status**: Done
+**What**: Corrigir a execução concorrente dos testes de backend que compartilham pool PostgreSQL, para que o gate completo seja determinístico.
+**Where**: `backend/package.json`
+**Depends on**: T7
+**Requirement**: confiabilidade de execução backend
+**Tests**: `npm test` no PostgreSQL Aiven
+**Gate**: `npm test`
+**Done when**: toda a suíte executa sequencialmente sem falhas de pool/race e sem reduzir assertions.
+**Commit**: `test(backend): run database suite sequentially`
+**Commit status**: Created in this commit
