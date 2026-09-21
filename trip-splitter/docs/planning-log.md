@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — DB T5: tabela de rateios aplicada
+
+- **O que mudou:** adicionada `expense_shares` com participante, valor em centavos e cascade da despesa.
+- **Gate:** SQL aplicado duas vezes no PostgreSQL Aiven.
+- **Commit:** `feat(db): create expense shares table`.
+
 ### 2026-09-20 — DB T4: tabela de despesas aplicada
 
 - **O que mudou:** adicionada `expenses` com valor positivo em centavos, pagador, vínculo à viagem e cascade.

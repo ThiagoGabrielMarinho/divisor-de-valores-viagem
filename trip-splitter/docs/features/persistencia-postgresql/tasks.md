@@ -99,7 +99,7 @@ T5 -> T6 -> T7
 
 ### T5: Criar tabela de rateios
 
-**Status**: Proposed
+**Status**: Done
 **What**: Adicionar o `CREATE TABLE IF NOT EXISTS expense_shares` com despesa, participante, valor em centavos e cascade da despesa.
 **Where**: `backend/db/schema.sql`
 **Depends on**: T4

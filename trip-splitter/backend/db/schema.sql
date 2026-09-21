@@ -39,3 +39,11 @@ CREATE TABLE IF NOT EXISTS expenses (
   pago_por TEXT NOT NULL REFERENCES users(id),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- T5: rateios da despesa, cascade da despesa
+CREATE TABLE IF NOT EXISTS expense_shares (
+  id TEXT PRIMARY KEY,
+  expense_id TEXT NOT NULL REFERENCES expenses(id) ON DELETE CASCADE,
+  participant_id TEXT NOT NULL REFERENCES users(id),
+  share_cents INTEGER NOT NULL CHECK (share_cents >= 0)
+);
