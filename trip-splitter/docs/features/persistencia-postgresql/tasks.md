@@ -51,7 +51,7 @@ T5 -> T6 -> T7
 
 ### T1: Criar tabela de usuários
 
-**Status**: Proposed
+**Status**: Done
 **What**: Adicionar o `CREATE TABLE IF NOT EXISTS users` com id texto, email, senha, nome, timestamp e unicidade de email insensível a caixa.
 **Where**: `backend/db/schema.sql`
 **Depends on**: None

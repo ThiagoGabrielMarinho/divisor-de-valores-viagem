@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — DB T1: tabela de usuários aplicada
+
+- **O que mudou:** criado o primeiro bloco de `backend/db/schema.sql` com `users` e índice único case-insensitive para email.
+- **Gate:** SQL aplicado duas vezes no PostgreSQL Aiven via `pg`; ambas as aplicações passaram.
+- **Commit:** `feat(db): create users table`.
+
 ### 2026-09-20 — Planejamento: schema PostgreSQL
 
 - **O que mudou:** criada a feature de planejamento `docs/features/persistencia-postgresql/` com `spec.md` (20 ACs, DB-01..DB-20) e `tasks.md` (T1–T7, DDL por tabela + índices), definindo as tabelas PostgreSQL do domínio validado no protótipo: users, trips, trip_memberships, expenses, expense_shares e obligations (com estado, prazo e confirmação). Nenhuma tabela foi criada; é só planejamento.
