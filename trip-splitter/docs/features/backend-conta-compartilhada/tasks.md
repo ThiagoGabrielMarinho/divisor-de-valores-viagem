@@ -89,14 +89,13 @@ T9 -> T10 -> T11 -> T12
 
 ### T4: Implementar sessão e logout
 
-**Status**: Proposed
-**What**: Criar sessão real conforme decisão de cookie/expiração e invalidar no logout.
-**Where**: `backend/src/services/authService.ts`
-**Depends on**: T3
+**Status**: Done
+**What**: Criar tabela e service de sessão persistida com token opaco, hash SHA-256, expiração e revogação no logout; o token puro não será persistido.
+**Where**: `backend/src/services/authService.ts`, `backend/src/db/schema.ts`, `backend/db/schema.sql`, `backend/src/tests/session.test.ts`
 **Requirement**: API-01, API-02, API-06
 **Tests**: sessão válida, expiração, logout, repetição e ausência
 **Gate**: `npm test`
-**Done when**: sessão não expõe credencial e logout invalida acesso protegido.
+**Done when**: sessão não expõe credencial, token puro não é persistido, expiração é respeitada e logout invalida acesso protegido.
 **Commit**: `feat(auth): add session lifecycle`
 
 ### T5: Proteger rotas e memberships

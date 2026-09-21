@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — Backend T4: sessão persistida e logout
+
+- **O que mudou:** adicionada tabela `sessions` com token hash, expiração e revogação; `authService` ganhou criação, consulta e revogação de sessão usando SHA-256 para o token persistido; testes de sessão foram adicionados.
+- **Gate:** `npm test` no Aiven: build, migração e 17/17 testes passaram.
+- **Commit:** `feat(auth): add session lifecycle`.
+
 ### 2026-09-20 — Backend T3: cadastro e hash scrypt
 
 - **O que mudou:** criado `authService.ts` com cadastro, normalização de email, duplicidade neutra, hash scrypt nativo e autenticação; criado `auth.test.ts` com 4 testes de hash/auth. O campo legado `users.senha` armazena somente o hash nesta etapa.

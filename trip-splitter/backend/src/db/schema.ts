@@ -59,6 +59,23 @@ export const users = pgTable(
   () => ({})
 );
 
+export const sessions = pgTable(
+  "sessions",
+  {
+    id: text("id").primaryKey(),
+    user_id: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    token_hash: text("token_hash").notNull(),
+    expires_at: timestamp("expires_at", { withTimezone: true }).notNull(),
+    revoked_at: timestamp("revoked_at", { withTimezone: true }),
+    created_at: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    tokenUnique: uniqueIndex("sessions_token_hash_key").on(table.token_hash),
+    userIndex: index("idx_sessions_user").on(table.user_id),
+    expiryIndex: index("idx_sessions_expires").on(table.expires_at),
+  })
+);
+
 export const tripMemberships = pgTable(
   "trip_memberships",
   {

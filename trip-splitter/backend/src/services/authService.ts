@@ -1,7 +1,7 @@
-import { randomBytes, scryptSync, timingSafeEqual } from "crypto";
+import { createHash, randomBytes, scryptSync, timingSafeEqual } from "crypto";
 import { eq, sql } from "drizzle-orm";
 import { db } from "../db";
-import { users } from "../db/schema";
+import { users, sessions } from "../db/schema";
 import { ValidationError } from "../types";
 
 export interface AuthUser {
@@ -102,6 +102,38 @@ export async function authenticateUser(
   // Resposta neutra: não diferencia email inexistente de senha inválida.
   if (!user || !verifyPassword(password, user.senha)) return null;
   return toAuthUser(user);
+}
+
+export async function createSession(userId: string, ttlMs = 8 * 60 * 60 * 1000): Promise<{ token: string; expiresAt: Date }> {
+  const token = randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + ttlMs);
+  const session = {
+    id: randomBytes(16).toString("hex"),
+    user_id: userId,
+    token_hash: createHash("sha256").update(token).digest("hex"),
+    expires_at: expiresAt,
+  };
+
+  await db.insert(sessions).values(session);
+  return { token, expiresAt };
+}
+
+export async function getSessionUser(token: string): Promise<AuthUser | null> {
+  if (!token) return null;
+  const tokenHash = createHash("sha256").update(token).digest("hex");
+  const [session] = await db.select().from(sessions).where(eq(sessions.token_hash, tokenHash));
+  if (!session || session.revoked_at || session.expires_at.getTime() <= Date.now()) return null;
+
+  const [user] = await db.select().from(users).where(eq(users.id, session.user_id));
+  return user ? toAuthUser(user) : null;
+}
+
+export async function revokeSession(token: string): Promise<void> {
+  if (!token) return;
+  const tokenHash = createHash("sha256").update(token).digest("hex");
+  await db.update(sessions)
+    .set({ revoked_at: new Date() })
+    .where(eq(sessions.token_hash, tokenHash));
 }
 
 export const authInternals = {
