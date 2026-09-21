@@ -17,6 +17,14 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — PROTO T4: viagens por usuário com papéis
+
+- **O que mudou:** criado `frontend/prototype/trips.js` com criação de viagem (criador vira owner), listagem restrita ao usuário logado, acesso com verificação de membership, adição de membro (member por padrão) e helpers de papel. `trips.js` foi incluído no `index.html` antes do `app.js`.
+- **Por quê:** dar visibilidade por usuário e papéis owner/member ao protótipo.
+- **Arquivos:** `frontend/prototype/trips.js`, `frontend/prototype/index.html`, `docs/features/evolucao-conta-compartilhada/tasks.md`.
+- **Gate:** `node --check` verde; checagem manual confirmou owner ao criar, isolamento por usuário, bloqueio de acesso cruzado e entrada como member.
+- **Commit:** `feat(frontend): scope trips by simulated user`.
+
 ### 2026-09-20 — PROTO T3: telas de autenticação
 
 - **O que mudou:** criado `frontend/prototype/index.html` com telas de login e cadastro, abas acessíveis, aviso de simulação e container da área autenticada. Para a tela funcionar isolada, foram criados um `app.js` mínimo (alternância de abas, login/cadastro/logout, erros e transição de tela) e um `prototype.css` base em modo claro.

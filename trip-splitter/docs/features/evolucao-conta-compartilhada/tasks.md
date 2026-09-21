@@ -101,7 +101,7 @@ T9 -> T10 -> T11 -> T12
 
 ### T4: Viagens por usuário com papéis
 
-**Status**: Proposed
+**Status**: Done
 **What**: Criar/listar viagens do usuário logado e aplicar owner/member, incluindo bloqueio de acesso a viagens de terceiros.
 **Where**: `frontend/prototype/trips.js`
 **Depends on**: T3
