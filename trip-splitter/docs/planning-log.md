@@ -17,6 +17,14 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — PROTO T14: remoção das mensagens de simulação
+
+- **O que mudou:** removidos os textos visíveis que diziam que era simulação: banner do topo, placeholder "senha simulada", hint dos participantes, greeting da home e toasts (login, cadastro, logout, reset de estado). Mensagens de erro do `auth.js`/`trips.js` foram neutralizadas e a constante `SIMULATION_NOTICE` (não usada) foi removida. Comentários internos de código não foram alterados por não serem visíveis ao usuário.
+- **Por quê:** a interface não deve anunciar que é simulação.
+- **Arquivos:** `frontend/prototype/index.html`, `frontend/prototype/app.js`, `frontend/prototype/auth.js`, `frontend/prototype/trips.js`, `docs/features/evolucao-conta-compartilhada/tasks.md`.
+- **Gate:** `node --check` verde; varredura confirmou ausência de texto visível de simulação no HTML e nas mensagens. UAT pendente de execução pelo usuário.
+- **Commit:** `refactor(frontend): remove simulation notices`.
+
 ### 2026-09-20 — PROTO T13: layout da seção de reset
 
 - **O que mudou:** a seção de resetar gastos foi redesenhada em `index.html` e `prototype.css` com ícone, título, descrição e botão alinhados, faixa lateral de risco e responsividade; a classe antiga `danger-zone` foi substituída por `reset-card`.

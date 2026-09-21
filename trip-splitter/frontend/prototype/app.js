@@ -100,7 +100,7 @@
     if (!user) { showAuth(); return; }
     currentTripId = null;
     showScreen(screenHome);
-    $("#home-greeting").textContent = "Olá, " + user.nome + ". Este é um protótipo simulado.";
+    $("#home-greeting").textContent = "Olá, " + user.nome + ".";
     renderSummary(user.id);
     renderTripsList(user.id);
   }
@@ -380,7 +380,7 @@
       Auth.login({ email: $("#login-email").value, senha: $("#login-senha").value });
       formLogin.reset();
       showHome();
-      showToast("Entrou na simulação.");
+      showToast("Bem-vindo de volta.");
     } catch (err) {
       showError(loginError, err.message);
     }
@@ -393,7 +393,7 @@
       Auth.signup({ nome: $("#signup-nome").value, email: $("#signup-email").value, senha: $("#signup-senha").value });
       formSignup.reset();
       showHome();
-      showToast("Conta criada nesta simulação.");
+      showToast("Conta criada.");
     } catch (err) {
       showError(signupError, err.message);
     }
@@ -402,7 +402,7 @@
   $("#btn-logout").addEventListener("click", function () {
     Auth.logout();
     showAuth();
-    showToast("Você saiu da simulação.");
+    showToast("Você saiu da sua conta.");
   });
 
   // ---------- handlers de home ----------
@@ -433,7 +433,7 @@
     var state = Store._getRawState();
     var target = state.users.filter(function (u) { return u.email === email; })[0];
     if (!target) {
-      showToast("Nenhuma conta simulada com esse email.", true);
+      showToast("Nenhuma conta encontrada com esse email.", true);
       return;
     }
     try {
@@ -490,7 +490,7 @@
   // ---------- boot ----------
 
   if (Store && Store.wasReset && Store.wasReset()) {
-    showToast("O estado do protótipo foi reiniciado neste navegador.");
+    showToast("Os dados foram reiniciados neste navegador.");
     Store.acknowledgeReset();
   }
 

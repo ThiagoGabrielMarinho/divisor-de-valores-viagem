@@ -52,7 +52,7 @@
 
     return Store.update(function (state) {
       var userExists = state.users.some(function (u) { return u.id === ownerUserId; });
-      if (!userExists) throw new Error("Usuário da simulação não encontrado.");
+      if (!userExists) throw new Error("Usuário não encontrado.");
 
       var trip = {
         id: Store.generateId("trip"),

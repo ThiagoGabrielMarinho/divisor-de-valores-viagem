@@ -221,7 +221,7 @@ T9 -> T10 -> T11 -> T12
 
 ### T14: Remover mensagens de simulação
 
-**Status**: Proposed
+**Status**: Done
 **What**: Remover os avisos e textos que indicam explicitamente que o cadastro/login/dados são uma simulação, na interface e nas mensagens do fluxo.
 **Where**: `frontend/prototype/index.html`
 **Depends on**: T13

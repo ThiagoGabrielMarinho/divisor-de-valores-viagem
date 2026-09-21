@@ -19,10 +19,6 @@
     }
   }
 
-  // Marca explícita de que a autenticação é simulada, para a UI exibir o aviso.
-  var SIMULATION_NOTICE =
-    "Cadastro e login são apenas uma simulação neste protótipo. Não use uma senha real.";
-
   function normalizeEmail(email) {
     return String(email || "").trim().toLowerCase();
   }
@@ -48,12 +44,12 @@
       throw new Error("Informe um email válido.");
     }
     if (senha.length < 4) {
-      throw new Error("A senha simulada precisa ter ao menos 4 caracteres.");
+      throw new Error("A senha precisa ter ao menos 4 caracteres.");
     }
 
     return Store.update(function (state) {
       if (findUserByEmail(state, email)) {
-        throw new Error("Já existe uma conta com esse email nesta simulação.");
+        throw new Error("Já existe uma conta com esse email.");
       }
       var user = {
         id: Store.generateId("user"),
@@ -78,7 +74,7 @@
       var user = findUserByEmail(state, email);
       if (!user || user.senhaSimulada !== senha) {
         // Mensagem neutra: não revela se foi o email ou a senha.
-        throw new Error("Email ou senha inválidos nesta simulação.");
+        throw new Error("Email ou senha inválidos.");
       }
       state.sessionUserId = user.id;
       return publicUser(user);
@@ -114,7 +110,6 @@
   }
 
   var Auth = {
-    SIMULATION_NOTICE: SIMULATION_NOTICE,
     signup: signup,
     login: login,
     logout: logout,
