@@ -159,7 +159,7 @@ T9 -> T10 -> T11 -> T12
 
 ### T10: Implementar resumo global com netting
 
-**Status**: Proposed
+**Status**: Done
 **What**: Agregar obrigações pendentes por par de users, aplicar netting e detalhar por viagem.
 **Where**: `backend/src/services/globalBalanceService.ts`
 **Depends on**: T9

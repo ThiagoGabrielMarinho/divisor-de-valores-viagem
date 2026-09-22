@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — Backend T10: resumo global com netting
+
+- **O que mudou:** criado `globalBalanceService.ts` com agregação por user autorizado, netting por par, exclusão de obrigações concluídas e detalhes por viagem; adicionados testes globais.
+- **Gate:** `npm test` no Aiven: build, migração e 39/39 testes passaram.
+- **Commit:** `feat(balance): add global netted summary service`.
+
 ### 2026-09-20 — Backend T9: reset seguro
 
 - **O que mudou:** criado `resetService.ts` com owner-only, confirmação obrigatória, bloqueio por obrigação concluída e exclusão transacional de obrigações/despesas; adicionados testes de autorização, confirmação e bloqueio.
