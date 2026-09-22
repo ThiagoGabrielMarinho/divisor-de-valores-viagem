@@ -59,11 +59,11 @@ router.get("/trips/:tripId/settlements", requireSession, requireTripMembership()
   try { res.json(await balanceService.getSettlements(req.params.tripId)); } catch (error) { next(error); }
 });
 
-router.get("/trips/:tripId/obligations", requireSession, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/trips/:tripId/obligations", requireSession, requireTripMembership(), async (req: Request, res: Response, next: NextFunction) => {
   try { res.json(await obligationService.listObligations(req.params.tripId, userId(req))); } catch (error) { next(error); }
 });
 
-router.post("/trips/:tripId/obligations", requireSession, async (req: Request, res: Response, next: NextFunction) => {
+router.post("/trips/:tripId/obligations", requireSession, requireTripMembership(), async (req: Request, res: Response, next: NextFunction) => {
   try {
     res.status(201).json(await obligationService.createObligation({
       tripId: req.params.tripId,

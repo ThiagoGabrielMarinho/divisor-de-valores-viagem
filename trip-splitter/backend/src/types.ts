@@ -14,6 +14,22 @@ export class NotFoundError extends Error {
   }
 }
 
+export class AuthorizationError extends ValidationError {
+  status = 403;
+  constructor(message = "Você não tem permissão para esta operação.") {
+    super(message);
+    this.name = "AuthorizationError";
+  }
+}
+
+export class ConflictError extends ValidationError {
+  status = 409;
+  constructor(message: string) {
+    super(message);
+    this.name = "ConflictError";
+  }
+}
+
 export interface Trip {
   id: string;
   name: string;

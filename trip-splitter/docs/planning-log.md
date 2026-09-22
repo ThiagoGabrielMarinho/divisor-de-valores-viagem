@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-21 — Backend T14: corrigir autorização HTTP e status
+
+- **O que mudou:** adicionados `AuthorizationError` (403) e `ConflictError` (409); obrigações passaram a verificar membership em cada transição; rotas de obligations passaram a exigir membership; reset concluído retorna 409; adicionados testes HTTP de outsider, roles, declare/confirm e reset.
+- **Gate:** `npm test` no Aiven: build, migração e 41/41 testes passaram.
+- **Commit:** `fix(api): close authorization and verifier coverage gaps`.
+
 ### 2026-09-21 — Backend T12: documentação e Verifier FAIL
 
 - **O que mudou:** docs de API, dados, arquitetura e testing foram atualizados; o Verifier independente criou `validation.md`, confirmou gate 40/40 e 3/3 mutações mortas, mas identificou gaps reais de autorização HTTP, status e atomicidade/reset. Lessons L-001/L-002 foram registradas pelo script.

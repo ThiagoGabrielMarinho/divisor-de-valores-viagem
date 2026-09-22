@@ -2,7 +2,7 @@ import { randomUUID } from "crypto";
 import { and, eq } from "drizzle-orm";
 import { db } from "../db";
 import { obligations, tripMemberships } from "../db/schema";
-import { NotFoundError, ValidationError } from "../types";
+import { NotFoundError, ValidationError, AuthorizationError } from "../types";
 
 export type ObligationState = "pendente" | "aguardando_confirmacao" | "concluido";
 
@@ -31,7 +31,7 @@ async function getObligation(id: string) {
 
 async function assertTripMember(tripId: string, userId: string): Promise<void> {
   if (!(await isMember(tripId, userId))) {
-    throw new ValidationError("Usuário não participa desta viagem.");
+    throw new AuthorizationError("Usuário não participa desta viagem.");
   }
 }
 
@@ -61,8 +61,9 @@ export async function createObligation(input: CreateObligationInput) {
 
 export async function declarePayment(obligationId: string, debtorUserId: string) {
   const obligation = await getObligation(obligationId);
+  await assertTripMember(obligation.trip_id, debtorUserId);
   if (obligation.de_user_id !== debtorUserId) {
-    throw new ValidationError("Apenas o devedor pode declarar o pagamento.");
+    throw new AuthorizationError("Apenas o devedor pode declarar o pagamento.");
   }
 
   const [updated] = await db.update(obligations)
@@ -75,8 +76,9 @@ export async function declarePayment(obligationId: string, debtorUserId: string)
 
 export async function confirmReceipt(obligationId: string, creditorUserId: string) {
   const obligation = await getObligation(obligationId);
+  await assertTripMember(obligation.trip_id, creditorUserId);
   if (obligation.para_user_id !== creditorUserId) {
-    throw new ValidationError("Apenas o recebedor pode confirmar o pagamento.");
+    throw new AuthorizationError("Apenas o recebedor pode confirmar o pagamento.");
   }
 
   const [updated] = await db.update(obligations)
@@ -89,8 +91,9 @@ export async function confirmReceipt(obligationId: string, creditorUserId: strin
 
 export async function rejectDeclaration(obligationId: string, creditorUserId: string) {
   const obligation = await getObligation(obligationId);
+  await assertTripMember(obligation.trip_id, creditorUserId);
   if (obligation.para_user_id !== creditorUserId) {
-    throw new ValidationError("Apenas o recebedor pode recusar o pagamento.");
+    throw new AuthorizationError("Apenas o recebedor pode recusar o pagamento.");
   }
 
   const [updated] = await db.update(obligations)
@@ -121,8 +124,9 @@ export async function setDeadline(
     throw new ValidationError("Prazo inválido. Use o formato AAAA-MM-DD.");
   }
   const obligation = await getObligation(obligationId);
+  await assertTripMember(obligation.trip_id, creditorUserId);
   if (obligation.para_user_id !== creditorUserId) {
-    throw new ValidationError("Apenas o recebedor pode definir o prazo.");
+    throw new AuthorizationError("Apenas o recebedor pode definir o prazo.");
   }
   if (obligation.estado === "concluido") {
     throw new ValidationError("Não é possível alterar o prazo de uma obrigação concluída.");
@@ -137,8 +141,9 @@ export async function setDeadline(
 
 export async function clearDeadline(obligationId: string, creditorUserId: string) {
   const obligation = await getObligation(obligationId);
+  await assertTripMember(obligation.trip_id, creditorUserId);
   if (obligation.para_user_id !== creditorUserId) {
-    throw new ValidationError("Apenas o recebedor pode alterar o prazo.");
+    throw new AuthorizationError("Apenas o recebedor pode alterar o prazo.");
   }
   const [updated] = await db.update(obligations)
     .set({ prazo: null })

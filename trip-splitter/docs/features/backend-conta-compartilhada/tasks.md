@@ -219,7 +219,7 @@ T9 -> T10 -> T11 -> T12 -> T14 -> T15
 
 ### T14: Corrigir autorização HTTP e completar cobertura do Verifier
 
-**Status**: Proposed
+**Status**: Done
 **What**: Aplicar membership às rotas de obrigações e garantir que tentativas autenticadas sem papel autorizado retornem 403 no contrato HTTP; adicionar testes de integração para os ACs de auth, membership, despesas, obrigações, reset e resumo que hoje só possuem cobertura parcial de service ou nenhuma assertion HTTP.
 **Where**: `backend/src/routes/trips.ts`, `backend/src/services/obligationService.ts`, `backend/src/types.ts`, `backend/src/tests/routes.test.ts`, `backend/src/tests/obligation.test.ts`
 **Depends on**: T12

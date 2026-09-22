@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { db } from "../db";
 import { expenses, obligations, tripMemberships } from "../db/schema";
-import { ValidationError } from "../types";
+import { ConflictError, ValidationError } from "../types";
 
 async function isOwner(tripId: string, userId: string): Promise<boolean> {
   const [membership] = await db.select({ id: tripMemberships.id }).from(tripMemberships).where(and(
@@ -30,7 +30,7 @@ export async function resetTripExpenses(
       eq(obligations.estado, "concluido")
     ));
     if (completed.length > 0) {
-      throw new ValidationError("Não é possível resetar uma viagem com pagamento concluído.");
+      throw new ConflictError("Não é possível resetar uma viagem com pagamento concluído.");
     }
 
     const deletedObligations = await tx.delete(obligations)
