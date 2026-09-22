@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — Backend T9: reset seguro
+
+- **O que mudou:** criado `resetService.ts` com owner-only, confirmação obrigatória, bloqueio por obrigação concluída e exclusão transacional de obrigações/despesas; adicionados testes de autorização, confirmação e bloqueio.
+- **Gate:** isolado 4/4; suíte completa no Aiven passou 35/35 na segunda execução após instabilidade transitória.
+- **Commit:** `feat(trips): add guarded expense reset service`.
+
 ### 2026-09-20 — Backend T8: prazos por obrigação
 
 - **O que mudou:** `obligationService` ganhou definição/limpeza de prazo pelo recebedor, validação `YYYY-MM-DD` e status temporal determinístico (`sem_prazo`, `no_prazo`, `atrasado`, `concluido`); Drizzle usa `DATE`.

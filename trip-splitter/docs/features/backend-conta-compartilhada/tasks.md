@@ -147,14 +147,14 @@ T9 -> T10 -> T11 -> T12
 
 ### T9: Implementar reset seguro
 
-**Status**: Proposed
+**Status**: Done
 **What**: Implementar reset owner-only, confirmado, transacional e bloqueado se houver obrigação concluída.
 **Where**: `backend/src/services/resetService.ts`
 **Depends on**: T8
 **Requirement**: API-19..API-21
 **Tests**: owner/member, confirmação, 409 após concluído, atomicidade e concorrência
 **Gate**: `npm test`
-**Done when**: reset apaga somente a viagem autorizada e nunca apaga após pagamento concluído.
+**Done when**: reset é owner-only, exige confirmação, bloqueia se houver concluído e apaga obrigações/despesas atomicamente.
 **Commit**: `feat(trips): add guarded expense reset service`
 
 ### T10: Implementar resumo global com netting
