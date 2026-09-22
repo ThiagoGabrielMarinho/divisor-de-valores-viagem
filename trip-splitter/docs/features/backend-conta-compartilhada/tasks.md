@@ -231,7 +231,7 @@ T9 -> T10 -> T11 -> T12 -> T14 -> T15
 
 ### T15: Cobrir atomicidade e concorrência do reset
 
-**Status**: Proposed
+**Status**: Done
 **What**: Adicionar teste de reset com despesas/rateios/obrigações e teste concorrente que demonstre no máximo um reset efetivo por ciclo; se necessário, ajustar o service para garantir lock/transação compatível com o requisito.
 **Where**: `backend/src/services/resetService.ts`, `backend/src/tests/reset.test.ts`
 **Depends on**: T14

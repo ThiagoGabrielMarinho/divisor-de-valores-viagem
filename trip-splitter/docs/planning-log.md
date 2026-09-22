@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-21 — Backend T15: reset atômico e concorrente
+
+- **O que mudou:** reset ganhou `pg_advisory_xact_lock(hashtext(tripId))`; testes agora provam deleção de despesas/obrigações, preservação após bloqueio e no máximo um reset efetivo em concorrência.
+- **Gate:** `npm test` no Aiven: build, migração e 42/42 testes passaram.
+- **Commit:** `fix(trips): enforce reset atomicity and concurrency`.
+
 ### 2026-09-21 — Backend T14: corrigir autorização HTTP e status
 
 - **O que mudou:** adicionados `AuthorizationError` (403) e `ConflictError` (409); obrigações passaram a verificar membership em cada transição; rotas de obligations passaram a exigir membership; reset concluído retorna 409; adicionados testes HTTP de outsider, roles, declare/confirm e reset.

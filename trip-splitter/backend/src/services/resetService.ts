@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { db } from "../db";
 import { expenses, obligations, tripMemberships } from "../db/schema";
 import { ConflictError, ValidationError } from "../types";
@@ -25,6 +25,9 @@ export async function resetTripExpenses(
   }
 
   return db.transaction(async (tx) => {
+    // Serializa resets da mesma viagem sem bloquear resets de viagens distintas.
+    await tx.execute(sql`SELECT pg_advisory_xact_lock(hashtext(${tripId}))`);
+
     const completed = await tx.select({ id: obligations.id }).from(obligations).where(and(
       eq(obligations.trip_id, tripId),
       eq(obligations.estado, "concluido")
