@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-20 — Backend T11: contratos HTTP protegidos
+
+- **O que mudou:** criadas rotas de auth/account, rotas de trips protegidas por sessão/membership, factory `app.ts`, bootstrap atualizado e teste HTTP de 401/cookie/criação/leitura autorizada.
+- **Gate:** `npm test` no Aiven: build, migração e 40/40 testes passaram.
+- **Commit:** `feat(api): expose shared account backend routes`.
+
 ### 2026-09-20 — Backend T10: resumo global com netting
 
 - **O que mudou:** criado `globalBalanceService.ts` com agregação por user autorizado, netting por par, exclusão de obrigações concluídas e detalhes por viagem; adicionados testes globais.

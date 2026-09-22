@@ -171,10 +171,15 @@ T9 -> T10 -> T11 -> T12
 
 ### T11: Expor rotas HTTP e atualizar app
 
-**Status**: Proposed
-**What**: Expor auth, account, memberships, obligations, deadlines, reset e summary em rotas finas e montar middleware no app.
-**Where**: `backend/src/routes/account.ts`
+**Status**: Done
+**What**: Expor auth, account, memberships, obligations, deadlines, reset e summary em rotas finas, aplicar middleware de sessão/membership às rotas de viagem e montar tudo no app.
+**Where**: `backend/src/routes/auth.ts`, `backend/src/routes/account.ts`, `backend/src/routes/trips.ts`, `backend/src/index.ts`, `backend/src/tests/routes.test.ts`
 **Depends on**: T10
+**Requirement**: API-01..API-25
+**Tests**: integração HTTP de status, payload, erros e autorização para cada rota
+**Gate**: `npm test`
+**Done when**: contratos HTTP estão documentados, rotas protegidas exigem sessão/membership e todos os caminhos principais possuem assertions exatas.
+**Commit**: `feat(api): expose shared account backend routes`
 **Requirement**: API-01..API-25
 **Tests**: integração HTTP de status, payload, erros e autorização para cada rota
 **Gate**: `npm test`
