@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "promote_threshold": 2,
+  "window_days": 45,
+  "quarantine_threshold": 2,
+  "next_id": 3,
+  "lessons": [
+    {
+      "id": "L-001",
+      "key": "ac_gap::mapeie autorizacao de papel para 403 e aplique membership middleware em toda rota que acessa dados de uma viagem",
+      "text": "Mapeie autorização de papel para 403 e aplique membership middleware em toda rota que acessa dados de uma viagem.",
+      "signal": "ac_gap",
+      "scope": "backend/routes",
+      "status": "candidate",
+      "features": [
+        "backend-conta-compartilhada"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "API-17; backend/src/routes/trips.ts:79-93 (backend/routes)"
+      ],
+      "created": "2026-09-22T00:41:43Z",
+      "last_seen": "2026-09-22T00:41:43Z"
+    },
+    {
+      "id": "L-002",
+      "key": "spec_precision_gap::teste contratos http com status e payload exatos nao apenas excecoes de service",
+      "text": "Teste contratos HTTP com status e payload exatos, não apenas exceções de service.",
+      "signal": "spec_precision_gap",
+      "scope": "backend/tests",
+      "status": "candidate",
+      "features": [
+        "backend-conta-compartilhada"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "API-20; docs/features/backend-conta-compartilhada/validation.md (backend/tests)"
+      ],
+      "created": "2026-09-22T00:41:43Z",
+      "last_seen": "2026-09-22T00:41:43Z"
+    }
+  ]
+}

@@ -17,6 +17,12 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-21 — Backend T12: documentação e Verifier FAIL
+
+- **O que mudou:** docs de API, dados, arquitetura e testing foram atualizados; o Verifier independente criou `validation.md`, confirmou gate 40/40 e 3/3 mutações mortas, mas identificou gaps reais de autorização HTTP, status e atomicidade/reset. Lessons L-001/L-002 foram registradas pelo script.
+- **Estado:** T12 fica `Blocked`; T14/T15 foram criadas como fix tasks e exigem nova verificação.
+- **Commit:** `docs(backend): document shared account contracts`.
+
 ### 2026-09-20 — Backend T11: contratos HTTP protegidos
 
 - **O que mudou:** criadas rotas de auth/account, rotas de trips protegidas por sessão/membership, factory `app.ts`, bootstrap atualizado e teste HTTP de 401/cookie/criação/leitura autorizada.

@@ -46,7 +46,7 @@ T5 -> T6 -> T7 -> T8 -> T9
 ### Phase 4: HTTP and closure
 
 ```text
-T9 -> T10 -> T11 -> T12
+T9 -> T10 -> T11 -> T12 -> T14 -> T15
 ```
 
 ## Task Breakdown
@@ -92,6 +92,7 @@ T9 -> T10 -> T11 -> T12
 **Status**: Done
 **What**: Criar tabela e service de sessão persistida com token opaco, hash SHA-256, expiração e revogação no logout; o token puro não será persistido.
 **Where**: `backend/src/services/authService.ts`, `backend/src/db/schema.ts`, `backend/db/schema.sql`, `backend/src/tests/session.test.ts`
+**Depends on**: T3
 **Requirement**: API-01, API-02, API-06
 **Tests**: sessão válida, expiração, logout, repetição e ausência
 **Gate**: `npm test`
@@ -115,6 +116,7 @@ T9 -> T10 -> T11 -> T12
 **Status**: Done
 **What**: Ligar participantes a usuários por `user_id`, criar criação de viagem/membership autenticada e exigir membership do ator ao registrar despesas, mantendo compatibilidade das APIs legadas até T11.
 **Where**: `backend/src/services/tripService.ts`, `backend/src/services/expenseService.ts`, `backend/src/db/schema.ts`, `backend/db/schema.sql`, `backend/src/tests/user-trip-expense.test.ts`
+**Depends on**: T5
 **Requirement**: API-07..API-12
 **Tests**: criação autorizada, membership, validações, atomicidade e valores em centavos
 **Gate**: `npm test`
@@ -180,23 +182,20 @@ T9 -> T10 -> T11 -> T12
 **Gate**: `npm test`
 **Done when**: contratos HTTP estão documentados, rotas protegidas exigem sessão/membership e todos os caminhos principais possuem assertions exatas.
 **Commit**: `feat(api): expose shared account backend routes`
-**Requirement**: API-01..API-25
-**Tests**: integração HTTP de status, payload, erros e autorização para cada rota
-**Gate**: `npm test`
-**Done when**: contratos HTTP estão documentados e todos os caminhos de erro possuem assertions exatas.
-**Commit**: `feat(api): expose shared account backend routes`
 
 ### T12: Documentar contratos e executar Verifier
 
-**Status**: Proposed
-**What**: Atualizar docs de API/dados/arquitetura/testes e produzir validação independente com evidência e mutações em scratch.
-**Where**: `docs/api.md`
+**Status**: Blocked
+**Blocker**: Verifier FAIL; gaps foram convertidos em T14/T15. Só voltar a Done após nova validação independente PASS.
+**What**: Atualizar docs de API/dados/arquitetura/testes com o backend real e produzir validação independente com evidência e mutações em scratch.
+**Where**: `docs/api.md`, `docs/data-model.md`, `docs/architecture.md`, `docs/testing.md`, `docs/features/backend-conta-compartilhada/validation.md`
 **Depends on**: T11
 **Requirement**: todos os API/DB
 **Tests**: gate full, revisão de contratos e Verifier
 **Gate**: `npm run build` + `npm test`
 **Done when**: docs refletem o backend real e o Verifier registra PASS com evidência `file:line`.
 **Commit**: `docs(backend): document shared account contracts`
+**Commit status**: Created in this commit
 
 ## Task Integrity Rules
 
@@ -217,3 +216,27 @@ T9 -> T10 -> T11 -> T12
 **Gate**: `npm test`
 **Done when**: a suíte completa executa sem concorrência entre arquivos que encerram o pool, mantendo todas as asserções verdes.
 **Commit**: `test(backend): run database suite sequentially`
+
+### T14: Corrigir autorização HTTP e completar cobertura do Verifier
+
+**Status**: Proposed
+**What**: Aplicar membership às rotas de obrigações e garantir que tentativas autenticadas sem papel autorizado retornem 403 no contrato HTTP; adicionar testes de integração para os ACs de auth, membership, despesas, obrigações, reset e resumo que hoje só possuem cobertura parcial de service ou nenhuma assertion HTTP.
+**Where**: `backend/src/routes/trips.ts`, `backend/src/services/obligationService.ts`, `backend/src/types.ts`, `backend/src/tests/routes.test.ts`, `backend/src/tests/obligation.test.ts`
+**Depends on**: T12
+**Requirement**: API-04, API-05, API-09, API-17, API-20..API-25
+**Tests**: integração HTTP com 401/403/400/409, isolamento de membro, transições de obrigação e payloads exatos
+**Gate**: `npm test`
+**Done when**: todas as rotas de obrigação verificam membership, tentativas sem autorização produzem 403, e cada AC em escopo possui assertion HTTP ou de service com resultado exato e evidência file:line.
+**Commit**: `fix(api): close authorization and verifier coverage gaps`
+
+### T15: Cobrir atomicidade e concorrência do reset
+
+**Status**: Proposed
+**What**: Adicionar teste de reset com despesas/rateios/obrigações e teste concorrente que demonstre no máximo um reset efetivo por ciclo; se necessário, ajustar o service para garantir lock/transação compatível com o requisito.
+**Where**: `backend/src/services/resetService.ts`, `backend/src/tests/reset.test.ts`
+**Depends on**: T14
+**Requirement**: API-19..API-21 e edge cases de reset concorrente
+**Tests**: integração PostgreSQL de atomicidade, rollback após bloqueio e concorrência
+**Gate**: `npm test`
+**Done when**: reset apaga dados relacionados atomicamente, preserva tudo quando bloqueado e duas operações simultâneas não produzem mais de um ciclo efetivo.
+**Commit**: `fix(trips): enforce reset atomicity and concurrency`
