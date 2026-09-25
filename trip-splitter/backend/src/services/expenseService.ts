@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 import { desc, eq } from "drizzle-orm";
 import { db } from "../db";
-import { expenses, expenseShares, participants } from "../db/schema";
+import { expenses, expenseShares, obligations, participants } from "../db/schema";
 import { Expense, ValidationError } from "../types";
 import { getTrip, isTripMember } from "./tripService";
 
@@ -46,10 +46,11 @@ export async function addExpense(tripId: string, input: AddExpenseInput): Promis
   }
 
   const tripParticipants = await db
-    .select({ id: participants.id })
+    .select({ id: participants.id, user_id: participants.user_id })
     .from(participants)
     .where(eq(participants.trip_id, tripId));
   const participantIds = new Set(tripParticipants.map((p) => p.id));
+  const userIdByParticipant = new Map(tripParticipants.map((p) => [p.id, p.user_id]));
 
   if (!participantIds.has(input.paidBy)) {
     throw new ValidationError("Quem pagou precisa ser um participante da viagem.");
@@ -93,6 +94,32 @@ export async function addExpense(tripId: string, input: AddExpenseInput): Promis
         share_cents: s.share_cents,
       }))
     );
+
+    // Deriva "quem paga quem": cada participante devedor deve seu rateio ao
+    // pagador. O próprio pagador não gera obrigação, e rateios não positivos
+    // ou participantes sem conta (user_id) são ignorados. Tudo na mesma
+    // transação da despesa/rateios: falha aqui faz rollback do conjunto.
+    const payerUserId = userIdByParticipant.get(input.paidBy) ?? null;
+    if (payerUserId) {
+      const derivedObligations = expense.shares
+        .filter((s) => s.participant_id !== input.paidBy && s.share_cents > 0)
+        .map((s) => ({ debtorUserId: userIdByParticipant.get(s.participant_id) ?? null, valorCents: s.share_cents }))
+        .filter((o): o is { debtorUserId: string; valorCents: number } => Boolean(o.debtorUserId) && o.debtorUserId !== payerUserId);
+
+      if (derivedObligations.length > 0) {
+        await tx.insert(obligations).values(
+          derivedObligations.map((o) => ({
+            id: randomUUID(),
+            trip_id: expense.trip_id,
+            expense_id: expense.id,
+            de_user_id: o.debtorUserId,
+            para_user_id: payerUserId,
+            valor_cents: o.valorCents,
+            estado: "pendente",
+          }))
+        );
+      }
+    }
   });
 
   return expense;

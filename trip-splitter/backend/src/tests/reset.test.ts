@@ -45,9 +45,11 @@ test("reset: exige owner e confirmação", async () => {
 test("reset: owner apaga despesas e obrigações atomicamente", async () => {
   const data = await fixture();
   await addPendingData(data);
+  // A despesa dividida entre owner e member deriva 1 obrigação (member→owner);
+  // addPendingData também cria 1 obrigação manual. Total: 2 obrigações.
   const result = await resetTripExpenses(data.trip.id, data.owner.id, true);
   assert.equal(result.deletedExpenses, 1);
-  assert.equal(result.deletedObligations, 1);
+  assert.equal(result.deletedObligations, 2);
   assert.equal((await listExpenses(data.trip.id)).length, 0);
   assert.equal((await listObligations(data.trip.id, data.owner.id)).length, 0);
 });
@@ -68,8 +70,10 @@ test("reset: duas operações concorrentes produzem no máximo um reset efetivo"
     resetTripExpenses(data.trip.id, data.owner.id, true),
     resetTripExpenses(data.trip.id, data.owner.id, true),
   ]);
+  // Apenas um reset é efetivo: 1 despesa e 2 obrigações (1 derivada + 1 manual)
+  // são apagadas no total entre as duas operações concorrentes.
   assert.equal(results.reduce((sum, result) => sum + result.deletedExpenses, 0), 1);
-  assert.equal(results.reduce((sum, result) => sum + result.deletedObligations, 0), 1);
+  assert.equal(results.reduce((sum, result) => sum + result.deletedObligations, 0), 2);
 });
 
 test("reset: encerra pool ao final da suíte", async () => { await pool.end(); });

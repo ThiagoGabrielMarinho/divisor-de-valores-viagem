@@ -55,15 +55,16 @@ T6 -> T7 -> T8
 
 ### T1: Derivar obrigações na transação da despesa
 
-**Status**: Proposed
+**Status**: Done
 **What**: Fazer `addExpense` criar, na mesma transação, uma obrigação de cada participante devedor para o pagador, no valor do rateio, ignorando o próprio pagador e valores não positivos; garantir rollback conjunto em falha.
-**Where**: `backend/src/services/expenseService.ts`, `backend/src/tests/expense-obligations.test.ts`
+**Where**: `backend/src/services/expenseService.ts`, `backend/src/tests/expense-obligations.test.ts`, `backend/src/tests/reset.test.ts`
 **Depends on**: None
 **Requirement**: INT-17, INT-18, INT-19, INT-20, INT-22
 **Tests**: integração PostgreSQL — despesa dividida gera obrigações corretas; pagador não vira devedor; resto reflete os rateios; despesa inválida não grava obrigação
 **Gate**: `npm test`
 **Done when**: registrar despesa cria as obrigações derivadas atomicamente e os testes afirmam devedor/recebedor/valor/estado exatos.
 **Commit**: `feat(expenses): derive obligations on expense creation`
+**Gate result**: `npm test` → 56 passed, 0 failed. Novos testes em `expense-obligations.test.ts` (obrigação única member→owner de 500; pagador não gera obrigação; resto 33/33; despesa inválida não grava). `reset.test.ts` atualizado: a despesa dividida passou a derivar 1 obrigação, então os testes de reset agora esperam 2 obrigações apagadas (1 derivada + 1 manual), mantendo as asserções de deleção total.
 
 ### T2: Buscar conta por email
 
