@@ -104,6 +104,16 @@ export async function authenticateUser(
   return toAuthUser(user);
 }
 
+export async function findUserByEmail(email: string): Promise<AuthUser | null> {
+  const normalizedEmail = normalizeEmail(email);
+  if (!normalizedEmail) return null;
+  const [user] = await db
+    .select()
+    .from(users)
+    .where(sql`lower(${users.email}) = lower(${normalizedEmail})`);
+  return user ? toAuthUser(user) : null;
+}
+
 export async function createSession(userId: string, ttlMs = 8 * 60 * 60 * 1000): Promise<{ token: string; expiresAt: Date }> {
   const token = randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + ttlMs);

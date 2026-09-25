@@ -68,7 +68,7 @@ T6 -> T7 -> T8
 
 ### T2: Buscar conta por email
 
-**Status**: Proposed
+**Status**: Done
 **What**: Adicionar `findUserByEmail` no service de auth e a rota fina `GET /api/account/lookup?email=` protegida por sessão, retornando apenas `{ id, nome, email }`.
 **Where**: `backend/src/services/authService.ts`, `backend/src/routes/account.ts`, `backend/src/tests/account-lookup.test.ts`
 **Depends on**: T1
@@ -77,6 +77,7 @@ T6 -> T7 -> T8
 **Gate**: `npm test`
 **Done when**: o endpoint resolve email→conta sem expor senha e exige sessão, com assertions exatas.
 **Commit**: `feat(account): add account lookup by email`
+**Gate result**: `npm test` → 61 passed, 0 failed. `account-lookup.test.ts` afirma 200 com `{id,nome,email}` sem `senha`/`created_at`, 404 para email inexistente, 400 sem email e 401 sem sessão.
 
 ### T3: Cliente de API do frontend
 
