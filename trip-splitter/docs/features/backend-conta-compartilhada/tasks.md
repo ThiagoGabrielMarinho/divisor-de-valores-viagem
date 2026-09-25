@@ -2,7 +2,7 @@
 
 **Spec:** `docs/features/backend-conta-compartilhada/spec.md`  
 **Design:** `docs/features/backend-conta-compartilhada/design.md`  
-**Status:** Em execução — T1–T15 Done; T16 escrito e compilando, bloqueado no gate por ausência de banco; T17 e T12 dependem do gate
+**Status:** Concluída — T1–T17 Done; Verifier PASS (gate 51/51, sensor 3/3), feature verificada
 
 ## Test Coverage Matrix
 
@@ -185,8 +185,8 @@ T9 -> T10 -> T11 -> T12 -> T14 -> T15 -> T16 -> T17
 
 ### T12: Documentar contratos e executar Verifier
 
-**Status**: Blocked
-**Blocker**: Verifier FAIL; gaps foram convertidos em T14/T15. Só voltar a Done após nova validação independente PASS.
+**Status**: Done
+**Unblocked**: Verifier reexecutado após T16/T17 com veredito PASS (25/25 ACs com evidência, gate 51/51 verde, sensor 3/3 mutantes mortos). Registro em `validation.md`.
 **What**: Atualizar docs de API/dados/arquitetura/testes com o backend real e produzir validação independente com evidência e mutações em scratch.
 **Where**: `docs/api.md`, `docs/data-model.md`, `docs/architecture.md`, `docs/testing.md`, `docs/features/backend-conta-compartilhada/validation.md`
 **Depends on**: T11
@@ -256,7 +256,7 @@ T9 -> T10 -> T11 -> T12 -> T14 -> T15 -> T16 -> T17
 
 ### T17: Reexecutar sensor com ambiente seguro no scratch
 
-**Status**: Proposed
+**Status**: Done
 **What**: Reexecutar 1–3 mutações comportamentais em worktree descartável com a mesma configuração segura de PostgreSQL usada pelo gate real, sem expor ou persistir `DATABASE_URL`, e confirmar todos os mutants mortos.
 **Where**: `docs/features/backend-conta-compartilhada/validation.md`
 **Depends on**: T16
@@ -265,3 +265,4 @@ T9 -> T10 -> T11 -> T12 -> T14 -> T15 -> T16 -> T17
 **Gate**: `npm test`
 **Done when**: sensor registra 1–3 mutações mortas, sem sobreviventes/inconclusivas, e o baseline do worktree real permanece intacto.
 **Commit**: `test(verify): complete shared account mutation sensor`
+**Sensor result**: worktree `C:\GIT\verifier-scratch` criado do HEAD `580dc9a`; baseline do worktree real capturado antes e confirmado IDÊNTICO depois; scratch removido. 3 mutações injetadas e todas mortas: M1 (globalBalanceService: remover filtro de concluídas) → `global-balance.test.ts` falhou `[] !== saldo`; M2 (obligationService.confirmReceipt: remover checagem de recebedor) → `authorization-routes.test.ts` `200 !== 403`; M3 (resetService: inverter guard de concluído) → `reset.test.ts` + HTTP `200 !== 409`. 0 sobreviventes, 0 inconclusivas. `DATABASE_URL` usada apenas via `backend/.env` (git-ignored), nunca versionada nem ecoada.
