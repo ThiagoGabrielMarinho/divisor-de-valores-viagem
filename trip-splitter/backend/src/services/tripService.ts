@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { eq, sql } from "drizzle-orm";
+import { eq, inArray, sql } from "drizzle-orm";
 import { db } from "../db";
 import { trips, participants, users, tripMemberships } from "../db/schema";
 import { Trip, Participant, ValidationError, NotFoundError } from "../types";
@@ -123,6 +123,15 @@ export async function addUserToTrip(
   });
 
   return participant;
+}
+
+export async function listTripsForUser(userId: string): Promise<Trip[]> {
+  const memberships = await db
+    .select({ trip_id: tripMemberships.trip_id })
+    .from(tripMemberships)
+    .where(eq(tripMemberships.user_id, userId));
+  if (memberships.length === 0) return [];
+  return db.select().from(trips).where(inArray(trips.id, memberships.map((m) => m.trip_id)));
 }
 
 export async function isTripMember(tripId: string, userId: string): Promise<boolean> {

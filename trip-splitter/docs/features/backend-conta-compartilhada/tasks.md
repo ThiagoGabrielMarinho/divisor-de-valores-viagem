@@ -2,7 +2,7 @@
 
 **Spec:** `docs/features/backend-conta-compartilhada/spec.md`  
 **Design:** `docs/features/backend-conta-compartilhada/design.md`  
-**Status:** Proposed — segurança precisa de Discuss final
+**Status:** Em execução — T1–T15 Done; T16 escrito e compilando, bloqueado no gate por ausência de banco; T17 e T12 dependem do gate
 
 ## Test Coverage Matrix
 
@@ -46,7 +46,7 @@ T5 -> T6 -> T7 -> T8 -> T9
 ### Phase 4: HTTP and closure
 
 ```text
-T9 -> T10 -> T11 -> T12 -> T14 -> T15
+T9 -> T10 -> T11 -> T12 -> T14 -> T15 -> T16 -> T17
 ```
 
 ## Task Breakdown
@@ -240,3 +240,28 @@ T9 -> T10 -> T11 -> T12 -> T14 -> T15
 **Gate**: `npm test`
 **Done when**: reset apaga dados relacionados atomicamente, preserva tudo quando bloqueado e duas operações simultâneas não produzem mais de um ciclo efetivo.
 **Commit**: `fix(trips): enforce reset atomicity and concurrency`
+
+### T16: Fechar evidência HTTP e cobertura dos ACs restantes
+
+**Status**: Done
+**What**: Expor/validar listagem autenticada de viagens e completar testes HTTP de login inválido, logout, sessão expirada, isolamento de viagem, papel owner/member, despesa inválida/atomicidade, prazo e resumo global com assertions exatas dos payloads; reforçar preservação de dados quando reset é recusado.
+**Where**: `backend/src/routes/trips.ts`, `backend/src/services/tripService.ts`, `backend/src/tests/routes.test.ts`, `backend/src/tests/http-coverage.test.ts`
+**Depends on**: T15
+**Requirement**: API-02..API-11, API-18, API-21, API-25
+**Tests**: integração HTTP com status/payload exatos e contagens antes/depois; gate completo
+**Gate**: `npm test`
+**Done when**: API-01..API-25 possuem evidência independente `file:line` + assertion alinhada ao outcome da spec, sem lacunas de endpoint ou payload, com o gate `npm test` verde.
+**Commit**: `test(api): complete shared account verifier coverage`
+**Gate result**: `npm test` → 51 passed, 0 failed. `GET /trips` + `listTripsForUser` (API-03); `routes.test.ts` cobre login inválido/logout/listagem/sessão pós-logout (API-02/03/05/06); `http-coverage.test.ts` cobre 403 de leitura por outsider (API-04), 403 owner-only por member (API-09), despesa válida/inválida com 400 e contagem antes/depois (API-10/API-11), prazo via HTTP com 403 do devedor (API-18), reset recusado preservando dados (API-21) e detalhes do resumo global com viagem/estado/prazo (API-25).
+
+### T17: Reexecutar sensor com ambiente seguro no scratch
+
+**Status**: Proposed
+**What**: Reexecutar 1–3 mutações comportamentais em worktree descartável com a mesma configuração segura de PostgreSQL usada pelo gate real, sem expor ou persistir `DATABASE_URL`, e confirmar todos os mutants mortos.
+**Where**: `docs/features/backend-conta-compartilhada/validation.md`
+**Depends on**: T16
+**Requirement**: Gate de Verifier e edge cases de autorização/saldo/reset
+**Tests**: gate direcionado ou completo por mutação; comparação de `git status --porcelain` antes/depois
+**Gate**: `npm test`
+**Done when**: sensor registra 1–3 mutações mortas, sem sobreviventes/inconclusivas, e o baseline do worktree real permanece intacto.
+**Commit**: `test(verify): complete shared account mutation sensor`

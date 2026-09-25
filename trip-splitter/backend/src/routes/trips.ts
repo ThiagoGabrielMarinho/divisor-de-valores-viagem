@@ -12,6 +12,13 @@ function userId(req: Request): string {
   return (req as AuthenticatedRequest).authUser!.id;
 }
 
+router.get("/trips", requireSession, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const trips = await tripService.listTripsForUser(userId(req));
+    res.json(trips);
+  } catch (error) { next(error); }
+});
+
 router.post("/trips", requireSession, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const trip = await tripService.createTripForUser(req.body?.name, userId(req));
