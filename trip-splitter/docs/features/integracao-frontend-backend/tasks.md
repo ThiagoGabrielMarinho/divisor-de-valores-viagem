@@ -81,7 +81,7 @@ T6 -> T7 -> T8
 
 ### T3: Cliente de API do frontend
 
-**Status**: Proposed
+**Status**: Done
 **What**: Criar `frontend/api.js` com `apiFetch` (`credentials: "include"`, JSON, `ApiError`) e as funções que mapeiam o contrato, incluindo o gancho global de 401→auth.
 **Where**: `frontend/api.js`
 **Depends on**: T2
@@ -90,6 +90,7 @@ T6 -> T7 -> T8
 **Gate**: `node --check frontend/api.js`
 **Done when**: o cliente cobre todas as rotas da jornada e trata erro/401 de forma central.
 **Commit**: `feat(frontend): add api client for real backend`
+**Gate result**: `node --check frontend/api.js` OK. Cliente cobre auth, viagens, lookup, participantes, despesas, obrigações, prazos, resumo global e reset; 401 chama `setUnauthorizedHandler` e lança `ApiError`.
 
 ### T4: Telas de autenticação integradas
 
