@@ -1,7 +1,7 @@
 # Tasks — schema PostgreSQL da conta compartilhada
 
 **Spec:** `docs/features/persistencia-postgresql/spec.md`
-**Status:** Proposed — planejamento de banco
+**Status:** Concluída — T1–T7 Done; schema aplicado e idempotente no PostgreSQL (Aiven) via migração de boot da feature backend-conta-compartilhada (gate `npm test` 51/51 em 2026-09-24, que roda `runMigrations()` no pretest)
 
 ## Execution Protocol
 

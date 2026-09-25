@@ -17,6 +17,22 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-24 — Persistência PostgreSQL: cabeçalho de status atualizado
+
+- **O que mudou:** o cabeçalho de `docs/features/persistencia-postgresql/tasks.md` deixou de dizer "Proposed — planejamento de banco" e passou a refletir a realidade: T1–T7 Done, com o schema aplicado e idempotente no PostgreSQL (Aiven) via a migração de boot da feature backend-conta-compartilhada. As 7 tasks de DDL já estavam Done individualmente; só o cabeçalho estava defasado.
+- **Por quê:** o gate `npm test` (51/51 em 2026-09-24) roda `runMigrations()` no pretest, que aplica e reaplica `backend/db/schema.sql`; portanto o schema está criado e idempotente, não apenas planejado.
+- **Arquivos:** `docs/features/persistencia-postgresql/tasks.md`, `docs/planning-log.md`.
+- **Gate:** `validate_tasks.py` sem erros nem warnings.
+- **Commit:** `docs(planning): mark postgresql schema feature as applied`.
+
+### 2026-09-24 — Backend T16/T17/T12: cobertura HTTP, sensor e Verifier PASS
+
+- **O que mudou:** T16 adicionou `GET /api/trips` + `listTripsForUser` e o arquivo `http-coverage.test.ts` fechando a evidência HTTP dos ACs API-04/09/10/11/18/21/25; corrigido teardown duplicado de pool no `routes.test.ts`. T17 reexecutou o sensor de mutação em worktree descartável com acesso seguro ao PostgreSQL: 3 mutações injetadas (globalBalance, obligation confirm, reset guard) e todas mortas, baseline do worktree real intacto. T12 desbloqueada; `validation.md` reescrito com veredito PASS (25/25 ACs, gate 51/51, sensor 3/3).
+- **Por quê:** encerrar a feature backend-conta-compartilhada com evidência independente completa.
+- **Arquivos:** `backend/src/routes/trips.ts`, `backend/src/services/tripService.ts`, `backend/src/tests/routes.test.ts`, `backend/src/tests/http-coverage.test.ts`, `docs/features/backend-conta-compartilhada/{tasks,validation}.md`.
+- **Gate:** `npm test` no Aiven: 51/51; `validate_state.py` e `validate_tasks.py` sem erros.
+- **Commits:** `test(api): complete shared account verifier coverage`; `test(verify): complete shared account mutation sensor`.
+
 ### 2026-09-21 — Backend T15: reset atômico e concorrente
 
 - **O que mudou:** reset ganhou `pg_advisory_xact_lock(hashtext(tripId))`; testes agora provam deleção de despesas/obrigações, preservação após bloqueio e no máximo um reset efetivo em concorrência.
