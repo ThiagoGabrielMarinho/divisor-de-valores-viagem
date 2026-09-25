@@ -17,6 +17,15 @@ Cada entrada segue: data, task relacionada, o que mudou, arquivos e commit.
 
 ## Entradas
 
+### 2026-09-24 — Planejamento: integração frontend ↔ backend real
+
+- **O que mudou:** criada a feature `docs/features/integracao-frontend-backend/` com spec (35 ACs INT-01..INT-35), design e 8 tasks. Objetivo: servir na raiz um frontend real que consome a API `/api` com sessão por cookie, cobrindo toda a jornada (auth, viagens, papéis, participante por email, despesas que derivam obrigações, pagamento em duas etapas, prazos, reset, resumo global), com o backend derivando obrigações na transação da despesa e um endpoint de busca de conta por email; o frontend legado por UUID será removido.
+- **Por quê:** o backend está completo e verificado, mas nenhum frontend real o consome; a raiz ainda servia o MVP legado e a UI evoluída era só simulada.
+- **Decisões confirmadas pelo usuário:** backend deriva obrigações (Opção B); adicionar participante por email; promover a UI do protótipo a frontend real na raiz; remover o legado.
+- **Arquivos:** `docs/features/integracao-frontend-backend/{spec,design,tasks}.md`, `docs/planning-log.md`, `docs/tasks.md`.
+- **Gate:** `validate_spec.py` e `validate_tasks.py` sem erros.
+- **Commit:** `docs(planning): plan frontend-backend integration`.
+
 ### 2026-09-24 — Persistência PostgreSQL: cabeçalho de status atualizado
 
 - **O que mudou:** o cabeçalho de `docs/features/persistencia-postgresql/tasks.md` deixou de dizer "Proposed — planejamento de banco" e passou a refletir a realidade: T1–T7 Done, com o schema aplicado e idempotente no PostgreSQL (Aiven) via a migração de boot da feature backend-conta-compartilhada. As 7 tasks de DDL já estavam Done individualmente; só o cabeçalho estava defasado.

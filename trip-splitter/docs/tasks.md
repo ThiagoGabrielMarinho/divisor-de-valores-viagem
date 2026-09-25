@@ -105,3 +105,16 @@ Este arquivo mantém o histórico das unidades de trabalho documentais do projet
 **Done when**: toda a suíte executa sequencialmente sem falhas de pool/race e sem reduzir assertions.
 **Commit**: `test(backend): run database suite sequentially`
 **Commit status**: Created in this commit
+
+## T9: Planejar integração frontend ↔ backend real
+
+**Status**: Done
+**What**: Criar spec, design e tasks para servir na raiz um frontend real integrado ao backend (auth, viagens, papéis, participante por email, despesas que derivam obrigações, pagamento em duas etapas, prazos, reset, resumo global), com o backend derivando obrigações na transação da despesa e endpoint de busca por email; e remover o frontend legado.
+**Where**: `docs/features/integracao-frontend-backend/`
+**Depends on**: T8
+**Requirement**: Planejamento da integração frontend+backend
+**Tests**: validadores estruturais de spec/tasks
+**Gate**: `python .kiro/scripts/validate_spec.py docs/features/integracao-frontend-backend/spec.md --root .` + `python .kiro/scripts/validate_tasks.py docs/features/integracao-frontend-backend/tasks.md --root .`
+**Done when**: spec (35 ACs), design e 8 tasks atômicas existem com decisões confirmadas, cada task com dependências, testes, gate, Done when e commit planejado.
+**Commit**: `docs(planning): plan frontend-backend integration`
+**Commit status**: Created in this commit
