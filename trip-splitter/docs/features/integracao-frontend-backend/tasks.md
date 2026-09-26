@@ -94,7 +94,7 @@ T6 -> T7 -> T8
 
 ### T4: Telas de autenticação integradas
 
-**Status**: Proposed
+**Status**: Done
 **What**: Criar `frontend/index.html` (auth/home/viagem) e o `frontend/styles.css` baseado no `prototype.css`, com o fluxo de cadastro/login/logout ligado à API e erro neutro.
 **Where**: `frontend/index.html`, `frontend/styles.css`, `frontend/app.js`
 **Depends on**: T3
@@ -103,10 +103,11 @@ T6 -> T7 -> T8
 **Gate**: `node --check frontend/app.js` + UAT
 **Done when**: a jornada de entrada funciona ponta a ponta contra o backend e sem sessão fica na auth.
 **Commit**: `feat(frontend): integrate authentication screens`
+**Status pós-execução**: Done — `node --check` OK; telas auth/home/viagem em `index.html`, `styles.css` (base do protótipo), `app.js` com login/cadastro/logout, erro neutro em 401 e handler global 401→auth. UAT interativa fica na task de verificação.
 
 ### T5: Home com viagens e resumo global
 
-**Status**: Proposed
+**Status**: Done
 **What**: Implementar a home autenticada: resumo global por pessoa com netting e estado vazio verdadeiro, lista de viagens do usuário, criação de viagem e navegação para a viagem.
 **Where**: `frontend/app.js`
 **Depends on**: T4
@@ -115,10 +116,11 @@ T6 -> T7 -> T8
 **Gate**: `node --check frontend/app.js` + UAT
 **Done when**: a home lista só as viagens do usuário e mostra o líquido por pessoa com detalhe.
 **Commit**: `feat(frontend): add authenticated home with global summary`
+**Nota de commit**: T4, T5 e T6 compartilham `index.html`/`app.js` (peça coesa de UI); entregues juntas em um único commit para não fatiar arquivos acoplados. Ver commit de T6.
 
 ### T6: Tela de viagem completa integrada
 
-**Status**: Proposed
+**Status**: Done
 **What**: Implementar a tela de viagem: participantes e adicionar por email (owner-only), registrar despesa, listar despesas, listar obrigações com ações por papel (declarar/confirmar/recusar/prazo) e reset owner-only com bloqueio, tudo via API.
 **Where**: `frontend/app.js`
 **Depends on**: T5
@@ -127,6 +129,7 @@ T6 -> T7 -> T8
 **Gate**: `node --check frontend/app.js` + UAT
 **Done when**: toda a jornada da viagem funciona contra o backend, com ações contextuais por papel e estados verdadeiros.
 **Commit**: `feat(frontend): integrate trip screen with backend`
+**Gate result**: `node --check frontend/app.js` OK. Este commit entrega as telas de T4, T5 e T6 (index.html, styles.css, app.js): auth, home com resumo global e viagens, e viagem com participantes/adicionar por email/despesas/obrigações/pagamentos/prazos/reset, tudo via `/api`.
 
 ### T7: Remover o frontend legado
 
