@@ -1,8 +1,12 @@
 # Tasks
 
-**Goal**: Break into GRANULAR, ATOMIC tasks. Clear dependencies. Right tools. Sequential phase execution plan.
+**Goal**: Break work into GRANULAR, ATOMIC tasks and keep a permanent execution history. Clear dependencies. Right tools. Sequential phase execution plan.
 
-**Skip this phase when:** There are ≤3 obvious steps. In that case, tasks are implicit - go straight to Execute and list them inline in your implementation plan.
+**Persistent task register**: Every task must be added to the feature's `tasks.md` before code changes, including small tasks when the detailed Tasks phase is skipped. Completed tasks stay in the file permanently; they are marked `Done`, never deleted. The session todo list is only a progress view and is not the source of truth.
+
+**Task lifecycle**: `Proposed` → `In Progress` → `Done` or `Blocked`. A task record must include ID, title, What, Where, Depends on, Requirement, Tests, Gate, Done when, and planned Conventional Commit message. A `Done` task requires a green gate, adequacy review and exactly one local commit.
+
+**Skip this phase when:** There are ≤3 obvious steps. In that case, skip only the detailed planning ceremony: add the atomic steps to the persistent `tasks.md` register and go straight to Execute.
 
 ## Why Granular Tasks?
 
@@ -33,13 +37,43 @@
 - One API endpoint
 - One file change
 
+## Persistent Task Register Contract
+
+The feature's `tasks.md` is an append-preserving register, not a disposable plan.
+
+When adding a task, include at minimum:
+
+```markdown
+### T[N]: [imperative task title]
+
+**Status**: Proposed | In Progress | Done | Blocked
+**What**: [one exact deliverable]
+**Where**: [files or paths]
+**Depends on**: [task IDs or None]
+**Requirement**: [spec ID, edge case, or explicit maintenance scope]
+**Tests**: [test type and exact location]
+**Gate**: [exact command]
+**Done when**: [binary, observable criteria]
+**Commit**: `[type](scope): [lowercase description]`
+```
+
+Lifecycle rules:
+
+- Add the task before touching implementation files.
+- Mark `In Progress` when execution starts.
+- Mark `Done` only after the gate passes and the adequacy review is complete.
+- Keep every completed task and its original acceptance criteria in the file.
+- Add a new task for new scope, follow-up work or a discovered gap; do not rewrite an old task to hide the change.
+- A blocked task remains visible with its reason and next step.
+- The task's planned commit message must describe the actual deliverable and must pass `check_commit.py` before commit.
+
 ---
 
 ## Process
 
 ### 1. Review Design
 
-Read `.specs/features/[feature]/design.md` before creating tasks.
+Read `<feature-dir>/design.md` before creating tasks.
 
 ### 1.5. Generate the Test Coverage Matrix (ALWAYS)
 
@@ -146,7 +180,7 @@ This keeps phase boundaries meaningful while letting the packing hit its target 
 
 Before showing tasks to the user, run ALL three pre-approval checks. These are NOT optional - they are gates. If any check fails, restructure the tasks and re-run until all pass.
 
-**Deterministic backing (run it, do not eyeball it).** `python3 <skill-dir>/scripts/validate_tasks.py <tasks-path-or-feature>` enforces the structural half of these checks so they cannot drift: it flags a `Where` that names multiple files (granularity smell, Check 1), a diagram edge with no matching `Depends on` within a phase and vice-versa (Check 2), a task missing its `Tests` or `Gate` field, a `Tests: none` to confirm against the matrix (Check 3), and any dependency pointing to a later phase. A non-zero exit means restructure before presenting. The script checks structure; you still build the two tables below (the layer-to-test co-location judgment is yours). If no code-execution tool is available, run the checks by reading `tasks.md`.
+**Deterministic backing (run it, do not eyeball it).** `python3 .kiro/scripts/validate_tasks.py <tasks-path-or-feature>` enforces the structural half of these checks so they cannot drift: it flags a `Where` that names multiple files (granularity smell, Check 1), a diagram edge with no matching `Depends on` within a phase and vice-versa (Check 2), a task missing its `Tests` or `Gate` field, a `Tests: none` to confirm against the matrix (Check 3), and any dependency pointing to a later phase. A non-zero exit means restructure before presenting. The script checks structure; you still build the two tables below (the layer-to-test co-location judgment is yours). If no code-execution tool is available, run the checks by reading `tasks.md`.
 
 **Check 1: Task Granularity** - verify each task is atomic (see Granularity Check section).
 
@@ -169,7 +203,7 @@ Before showing tasks to the user, run ALL three pre-approval checks. These are N
 
 ---
 
-## Template: `.specs/features/[feature]/tasks.md`
+## Template: `<feature-dir>/tasks.md`
 
 ```markdown
 # [Feature] Tasks
@@ -182,7 +216,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 ---
 
-**Design**: `.specs/features/[feature]/design.md`
+**Design**: `<feature-dir>/design.md`
 **Status**: Draft | Approved | In Progress | Done
 
 ---

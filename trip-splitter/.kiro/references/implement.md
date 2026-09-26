@@ -54,7 +54,9 @@ If there is no `tasks.md` for this feature, you MUST list atomic steps before wr
 
 If listing steps reveals >5 steps or complex dependencies, STOP and create a formal `tasks.md` instead. The Tasks phase was wrongly skipped.
 
-### 1. Pick Task
+### 1. Pick or Add Task
+
+Use the persistent `tasks.md` register, not only the session todo list. If the requested work does not have a task record, add one before writing code with its ID, scope, tests, gate, Done when criteria and planned commit message. Do not start implementation while the task is only implicit. Mark the record `In Progress` when execution starts.
 
 From tasks.md (if exists) or from the execution plan above. User specifies ("implement T3") or suggest next available.
 
@@ -214,14 +216,16 @@ After the gate check passes:
 
    Add the two mapping tables and a one-line adequacy verdict to the Execution Template's Post-Gate section.
 
-### 7. Status + Atomic Commit (same commit)
+### 7. Status + Atomic Commit (same commit, mandatory)
 
-After the gate is green, close the task record **before** creating the commit, then commit code and status together. Never leave `tasks.md` still open after a successful task commit - a crash between those steps is how resume redoes finished work.
+After the gate is green, close the task record before creating the commit, then commit the implementation, tests and task status together. A task is not complete without its corresponding commit.
 
-1. Mark the task complete in `tasks.md`. Update requirement traceability in `spec.md` if requirement IDs are used.
-2. Create **one** atomic commit that includes the implementation, its tests, and those status/traceability updates.
+1. Mark the task `Done` in the persistent `tasks.md`. Update requirement traceability if requirement IDs are used.
+2. Validate the planned message with `.kiro/scripts/check_commit.py`.
+3. Create exactly one local commit for this task. Do not batch multiple tasks into one commit.
+4. Keep the task record permanently in `tasks.md`, including its final Done criteria and commit message.
 
-Each task gets its own commit immediately after verification. Never batch multiple tasks into one commit.
+If the gate is red, do not mark the task Done and do not commit. If an environmental blocker prevents the commit, keep the task visible as `Blocked` with the reason; never silently omit the commit or claim completion.
 
 **Format ([Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/)):**
 
@@ -290,13 +294,13 @@ for reuse across multiple endpoints.
 - Never sneak in "while I'm here" changes
 - If tests are part of the task, include them in the same commit
 
-**Deterministic check.** Validate the message before committing: `python3 <skill-dir>/scripts/check_commit.py --message "<your message>"`. A non-zero exit means fix the format first. This makes the format rule enforceable instead of memory-dependent.
+**Deterministic check.** Validate the message before committing: `python3 .kiro/scripts/check_commit.py --message "<your message>"`. A non-zero exit means fix the format first. This makes the format rule enforceable instead of memory-dependent.
 
 **Optional git-level guard (git only, no agent dependency).** In a git repo the same check can run on every commit by wiring it as a `commit-msg` hook, so a malformed message is rejected regardless of who or what drives the commit:
 
 ```bash
-# from the repo root, one time (resolve <skill-dir> to the directory that contains this skill's SKILL.md):
-ln -sf <skill-dir>/scripts/check_commit.py .git/hooks/commit-msg && chmod +x .git/hooks/commit-msg
+# from the repo root, one time:
+ln -sf .kiro/scripts/check_commit.py .git/hooks/commit-msg && chmod +x .git/hooks/commit-msg
 ```
 
 This is a plain git hook, not tied to any editor or assistant. Skip it if the project manages hooks its own way (for example a pre-commit framework); the manual check above still applies.
@@ -330,7 +334,7 @@ Dispatch a fresh sub-agent following the **Verifier** role described in [sub-age
 - The test files in scope
 - `validate.md` as its operating checklist
 
-**What the Verifier does** (full procedure in [sub-agents.md](sub-agents.md); operating checklist in [validate.md](validate.md)): a spec-anchored coverage check (evidence-or-zero, each asserted value matched to the spec outcome) plus a discrimination sensor (behavior-level mutations run in a scratch state and then discarded), after which it writes `.specs/features/[feature]/validation.md` (PASS/FAIL, per-AC evidence, sensor result, diff range) and returns a compact verdict + ranked gaps in chat. It runs read-only over the real tree and does NOT fix.
+**What the Verifier does** (full procedure in [sub-agents.md](sub-agents.md); operating checklist in [validate.md](validate.md)): a spec-anchored coverage check (evidence-or-zero, each asserted value matched to the spec outcome) plus a discrimination sensor (behavior-level mutations run in a scratch state and then discarded), after which it writes `<feature-dir>/validation.md` (PASS/FAIL, per-AC evidence, sensor result, diff range) and returns a compact verdict + ranked gaps in chat. It runs read-only over the real tree and does NOT fix.
 
 If the Verifier returns FAIL, the orchestrator routes the ranked gaps back to an implementer as fix tasks, then re-dispatches the Verifier - bounded to **3 fix→re-verify iterations** before escalating to the user.
 
@@ -403,7 +407,7 @@ If you are unsure whether more tasks remain, check `tasks.md`: if every task is 
 **Status**: ✅ Complete | ❌ Blocked | ⚠️ Partial
 ```
 
-**After the LAST task:** dispatch the Verifier sub-agent (see step 9 and [sub-agents.md](sub-agents.md)) for independent feature-level validation, including the spec-anchored check and discrimination sensor. Validation always runs automatically - never prompted. Execute is not done until the Verifier reports PASS and the validation report is written, confirmed deterministically by `python3 <skill-dir>/scripts/validate_state.py <feature>` (exit non-zero = not done); see [validate.md](validate.md).
+**After the LAST task:** dispatch the Verifier sub-agent (see step 9 and [sub-agents.md](sub-agents.md)) for independent feature-level validation, including the spec-anchored check and discrimination sensor. Validation always runs automatically - never prompted. Execute is not done until the Verifier reports PASS and the validation report is written, confirmed deterministically by `python3 .kiro/scripts/validate_state.py <feature>` (exit non-zero = not done); see [validate.md](validate.md).
 
 ---
 
@@ -420,7 +424,7 @@ If you are unsure whether more tasks remain, check `tasks.md`: if every task is 
 - **Learn from mistakes** - If something goes wrong, surface it to the user so it informs the next task
 - **Don't stop at the last commit** - Feature-level validation (step 9) is the final step of Execute, not optional
 - **Plain voice in prose** - Commit bodies and the validation summary follow the writing rules in [coding-principles.md](coding-principles.md): lead with what changed, no filler
-- **Validate the commit message** - `python3 <skill-dir>/scripts/check_commit.py --message "..."` before committing
+- **Validate the commit message** - `python3 .kiro/scripts/check_commit.py --message "..."` before committing
 
 ---
 
@@ -428,7 +432,7 @@ If you are unsure whether more tasks remain, check `tasks.md`: if every task is 
 
 When work is interrupted, paused, or a session ends before the feature is complete:
 
-1. Open `.specs/STATE.md`.
+1. Open `<project-memory-file>`.
 2. Locate the `## Handoff` section.
 3. **Replace only that section's body** with the current snapshot (feature, phase/task, completed, in-progress `file:line`, next step, blockers, uncommitted files, branch). See [memory.md](memory.md) for the exact format.
 4. Do NOT touch the `## Decisions` section above it - decisions are written only during Design.

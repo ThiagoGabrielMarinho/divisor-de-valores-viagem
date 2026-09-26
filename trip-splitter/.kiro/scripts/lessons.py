@@ -8,13 +8,13 @@ recurrence counting, candidate->confirmed promotion, pruning, demotion, and
 rendering the human/agent-readable playbook. Bookkeeping by hand is exactly what
 rots a lessons file, so it lives here, not in a prompt.
 
-Canonical state:  .specs/lessons.json   (machine-owned - do NOT hand-edit)
-Rendered view:    .specs/LESSONS.md      (regenerated on every write)
+Canonical state:  .kiro/lessons.json   (machine-owned - do NOT hand-edit)
+Rendered view:    .kiro/LESSONS.md      (regenerated on every write)
 
 Pure standard library. No dependencies. The script file lives in this skill's
-`scripts/` directory - invoke it as `python3 <skill-dir>/scripts/lessons.py ...`
+`scripts/` directory - invoke it as `python .kiro/scripts/lessons.py ...`
 (never `python3 scripts/lessons.py` from a consuming project root). Run with
-cwd at the project root (the dir that contains .specs), or pass --root.
+cwd at the project root, or pass --root.
 
 Commands:
   add        Record a grounded lesson from a verification signal.
@@ -36,8 +36,8 @@ import re
 import sys
 import unicodedata
 
-STORE_REL = os.path.join(".specs", "lessons.json")
-RENDER_REL = os.path.join(".specs", "LESSONS.md")
+STORE_REL = os.path.join(".kiro", "lessons.json")
+RENDER_REL = os.path.join(".kiro", "LESSONS.md")
 
 SIGNALS = {
     "ac_gap": "Acceptance criterion not covered / failed",
@@ -91,7 +91,7 @@ def _load(root):
 
 
 def _save(root, data):
-    os.makedirs(os.path.join(root, ".specs"), exist_ok=True)
+    os.makedirs(os.path.join(root, ".kiro"), exist_ok=True)
     with open(_store_path(root), "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
         f.write("\n")
@@ -178,7 +178,7 @@ def _render(root, data):
     lines.append("# LESSONS - auto-maintained by scripts/lessons.py")
     lines.append("")
     lines.append("> Machine-owned. Do NOT hand-edit. Changes are overwritten on the next `lessons.py` write.")
-    lines.append("> Canonical state lives in `.specs/lessons.json`. Edit lessons only via the script.")
+    lines.append("> Canonical state lives in `.kiro/lessons.json`. Edit lessons only via the script.")
     lines.append(f"> promote_threshold={data['promote_threshold']} distinct features · window_days={data['window_days']} · quarantine_threshold={data['quarantine_threshold']}")
     lines.append("")
 
@@ -370,7 +370,7 @@ def cmd_status(root, args):
 
 def main(argv=None):
     p = argparse.ArgumentParser(prog="lessons.py", description="Deterministic lessons bookkeeping for tlc-spec-driven.")
-    p.add_argument("--root", default=".", help="Project root containing .specs/ (default: current dir)")
+    p.add_argument("--root", default=".", help="Project root containing `.kiro/` (default: current dir)")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     sp = sub.add_parser("init", help="Create empty store + rendered file")

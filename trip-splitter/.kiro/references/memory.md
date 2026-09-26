@@ -1,6 +1,6 @@
 # Memory Layer
 
-**File:** `.specs/STATE.md`
+**File:** `<project-memory-file>`
 
 A single file with two section-scoped parts. Each section has its own lifecycle; writes are always targeted - never whole-file overwrites.
 
@@ -50,7 +50,7 @@ Captures mid-task / in-flight state so work can resume without re-reading the fu
 ```markdown
 ## Handoff
 
-- **Feature**: [feature name / .specs path]
+- **Feature**: [feature name / <feature-artifact-path> path]
 - **Phase / Task**: [e.g., Phase 2 / T4 - implement repository layer]
 - **Completed**: [comma-separated task IDs or "none"]
 - **In-progress** (file:line): [e.g., `src/billing/subscription.service.ts:88` - mid-write]
@@ -113,14 +113,14 @@ Both are silent data loss. The section-scoped write rule is the single correctne
 
 ### Pause
 
-1. Locate the `## Handoff` section in `.specs/STATE.md`.
+1. Locate the `## Handoff` section in `<project-memory-file>`.
 2. Replace its body (everything between `## Handoff` and the next `##` or EOF) with the current snapshot.
 3. Do NOT modify anything above or before `## Handoff`.
 4. Commit or stash outstanding changes as appropriate.
 
 ### Resume
 
-1. Read `.specs/STATE.md` - both sections.
+1. Read `<project-memory-file>` - both sections.
 2. Re-confirm active decisions from `## Decisions` - nothing superseded since last session?
 3. Read `## Handoff` - treat it as a **hypothesis** for feature, phase/task, next step, blockers, uncommitted files, branch - not as ground truth by itself.
 4. **Reconcile with git before editing anything:**
@@ -141,4 +141,4 @@ Both are silent data loss. The section-scoped write rule is the single correctne
 
 - Numbers are sequential, project-scoped, and permanent - never reused.
 - The counter starts at `AD-001`. Check existing entries before assigning the next number.
-- If `.specs/STATE.md` does not exist, the first decision is `AD-001`.
+- If `<project-memory-file>` does not exist, the first decision is `AD-001`.

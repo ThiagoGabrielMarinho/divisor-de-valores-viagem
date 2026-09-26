@@ -18,12 +18,12 @@ What it checks (heuristic markdown inspection, not a full parser):
   WARN   - open questions are not explicitly resolved
 
 Usage:
-  python3 <skill-dir>/scripts/validate_spec.py [target] [--root DIR] [--strict]
+  python .kiro/scripts/validate_spec.py [target] [--root DIR] [--strict]
 
   Invoke from the skill directory that ships this script (not the project root).
-  target    Path to a spec.md, a feature directory, or a project root.
-            Omitted -> auto-detect the single feature under <root>/.specs/features/.
-  --root    Project root that contains .specs/ (default: current dir).
+  target    Path to a spec.md or feature directory. Prefer an explicit path.
+            Omitted -> auto-detect a single spec.md below <root>.
+  --root    Search root used only for explicit-path resolution/autodetection (default: current dir).
   --strict  Treat warnings as errors.
 
 Exit codes: 0 pass, 1 errors found (or warnings under --strict), 2 usage error.
@@ -58,30 +58,37 @@ def resolve_spec(target, root):
                 return cand
             # maybe it's a project root
             return _autodetect(target)
-        # Not a path: treat as a feature name under <root>/.specs/features/<name>/
-        cand = os.path.join(root, ".specs", "features", target, "spec.md")
-        if os.path.isfile(cand):
-            return cand
+        # A feature name is accepted only when it resolves to one directory
+        # containing spec.md; there is no project-specific artifact directory.
+        matches = []
+        for dirpath, dirnames, filenames in os.walk(root):
+            dirnames[:] = [d for d in dirnames if d not in {".git", "node_modules", "references", "scripts"}]
+            if os.path.basename(dirpath) == target and "spec.md" in filenames:
+                matches.append(os.path.join(dirpath, "spec.md"))
+        if len(matches) == 1:
+            return matches[0]
+        if len(matches) > 1:
+            raise SystemExit("validate_spec: multiple matching feature directories; pass an explicit spec.md path")
         return None
     return _autodetect(root)
 
 
 def _autodetect(root):
-    base = os.path.join(root, ".specs", "features")
-    if not os.path.isdir(base):
-        return None
-    features = [
-        d for d in sorted(os.listdir(base))
-        if os.path.isfile(os.path.join(base, d, "spec.md"))
-    ]
+    # Search only for explicit spec artifacts; no fixed project storage is assumed.
+    features = []
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = [d for d in dirnames if d not in {".git", "node_modules", "references", "scripts"}]
+        if "spec.md" in filenames:
+            features.append(os.path.join(dirpath, "spec.md"))
+    features.sort()
     if len(features) == 1:
-        return os.path.join(base, features[0], "spec.md")
+        return features[0]
     if len(features) == 0:
         return None
     # Ambiguous: signal the caller with the list.
     raise SystemExit(
         "validate_spec: multiple features found; pass one explicitly:\n  "
-        + "\n  ".join(os.path.join(base, f, "spec.md") for f in features)
+        + "\n  ".join(features)
     )
 
 

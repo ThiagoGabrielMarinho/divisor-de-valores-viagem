@@ -2,9 +2,9 @@
 
 **Purpose**: Turn verification failures into reusable, project-local guidance that actually changes future behavior - without the lessons file rotting into a dead log.
 
-**The split that keeps it alive**: the agent (you) supplies *judgment* - read the failure, phrase the lesson, cite its grounding. The script `scripts/lessons.py` owns everything *mechanical* - IDs, recurrence counting across distinct features, candidate→confirmed promotion, pruning, demotion, and rendering. Hand-kept bookkeeping is exactly what rots, so it is not your job; the script's job.
+**The split that keeps it alive**: the agent (you) supplies *judgment* - read the failure, phrase the lesson, cite its grounding. The script `.kiro/scripts/lessons.py` owns everything *mechanical* - IDs, recurrence counting across distinct features, candidate→confirmed promotion, pruning, demotion, and rendering. Hand-kept bookkeeping is exactly what rots, so it is not your job; the script's job.
 
-**What feeds it**: only the execution signals already produced by the Verifier in [validate.md](validate.md) and written to `.specs/features/[feature]/validation.md`. No signal → no lesson. This is the hard gate: a lesson with no grounding in a real verification outcome is an opinion, and the script refuses it.
+**What feeds it**: only the execution signals already produced by the Verifier in [validate.md](validate.md) and written to `<feature-dir>/validation.md`. No signal → no lesson. This is the hard gate: a lesson with no grounding in a real verification outcome is an opinion, and the script refuses it.
 
 **Scope discipline (critical)**: this layer captures *execution* lessons that are project-local and grounded in a signal. It does **NOT** capture methodology opinions about the SDD process itself ("we should always discuss earlier"). Those are maintainer decisions that ship in a version bump - never auto-written. If a candidate lesson is really about how to run the skill rather than about this codebase, do not record it.
 
@@ -14,13 +14,13 @@
 
 | File | Owner | Purpose |
 | ---- | ----- | ------- |
-| `.specs/lessons.json` | script | Canonical machine state. Never hand-edit. |
-| `.specs/LESSONS.md` | script (rendered) | Human/agent-readable playbook. Read it; never write it by hand. |
-| `<skill-dir>/scripts/lessons.py` | package | The only way to mutate lessons. Invoke via the skill directory - never `python3 scripts/lessons.py` from the project root. |
+| `.kiro/lessons.json` | script | Canonical machine state. Never hand-edit. |
+| `.kiro/LESSONS.md` | script (rendered) | Human/agent-readable playbook. Read it; never write it by hand. |
+| `.kiro/scripts/lessons.py` | package | The only way to mutate lessons. Invoke via the skill directory - never `python3 .kiro/scripts/lessons.py` from the project root. |
 
 `confirmed` lessons are the playbook the agent loads. `candidate` lessons are tracked but NOT trusted until corroborated across `promote_threshold` distinct features (default 2). `quarantined` lessons failed when applied and are ignored.
 
-**Invocation:** resolve `<skill-dir>` as the directory that contains this skill's `SKILL.md`, then run `python3 <skill-dir>/scripts/lessons.py ...`. The store under `.specs/` is still relative to the project root (use `--root` when cwd differs).
+**Invocation:** run `python .kiro/scripts/lessons.py ...` from the project root. Generated lesson state is stored in `.kiro/lessons.json` and `.kiro/LESSONS.md`; these files are created only when the script is used.
 
 ---
 
@@ -47,7 +47,7 @@ If `validation.md` is a clean PASS with no surviving mutants, no spec-precision 
 For each signal, phrase the lesson as **one terse, actionable, codebase-general sentence** - a rule a future feature could apply, not a restatement of this bug. Then call the script:
 
 ```bash
-python3 <skill-dir>/scripts/lessons.py add \
+python3 .kiro/scripts/lessons.py add \
   --feature "[feature folder name]" \
   --signal  "[signal value from table above]" \
   --source  "[file:line | AC id | mutant id | SPEC_DEVIATION ref from validation.md]" \
@@ -72,7 +72,7 @@ After distilling, if `validation.md` contained any FAIL, surviving mutant, spec-
 If a `confirmed` lesson was loaded for this feature (see READ below) and the *same* failure recurred anyway, the guidance is not working:
 
 ```bash
-python3 <skill-dir>/scripts/lessons.py penalize --id L-NNN
+python3 .kiro/scripts/lessons.py penalize --id L-NNN
 ```
 
 Two penalties quarantine it. Use sparingly and only on real repeats.
@@ -87,11 +87,11 @@ At the start of **Specify** (and again at **Design** for Large/Complex), load th
 
 ```bash
 # All confirmed lessons:
-python3 <skill-dir>/scripts/lessons.py list --status confirmed
+python3 .kiro/scripts/lessons.py list --status confirmed
 
 # Or filter by the area this feature touches:
-python3 <skill-dir>/scripts/lessons.py list --status confirmed --scope billing
-python3 <skill-dir>/scripts/lessons.py list --status confirmed --query "idempotency"
+python3 .kiro/scripts/lessons.py list --status confirmed --scope billing
+python3 .kiro/scripts/lessons.py list --status confirmed --query "idempotency"
 ```
 
 Apply the returned lessons as guidance while writing the spec / design. Do **not** load `candidate` or `quarantined` lessons as guidance - they are not trusted. Keep the loaded set small; this runs inside the <40k token budget.
@@ -100,13 +100,13 @@ Apply the returned lessons as guidance while writing the spec / design. Do **not
 
 ## Fallback when code execution is unavailable
 
-Some harnesses cannot run Python. Only then: maintain `.specs/LESSONS.md` by hand, following the exact same rules - grounded entries only, candidate→confirmed after 2 distinct features, prune stale candidates. **This path is degraded**: hand bookkeeping is the failure mode this layer exists to avoid, so prefer the script wherever a code tool exists. State once in chat that you are in the no-script fallback so the user knows accounting is best-effort.
+Some harnesses cannot run Python. Only then: maintain `.kiro/LESSONS.md` by hand, following the exact same rules - grounded entries only, candidate→confirmed after 2 distinct features, prune stale candidates. **This path is degraded**: hand bookkeeping is the failure mode this layer exists to avoid, so prefer the script wherever a code tool exists. State once in chat that you are in the no-script fallback so the user knows accounting is best-effort.
 
 ---
 
 ## Disable
 
-This layer is additive and self-gating (no signal → no write). To turn it off for a project, delete `.specs/lessons.json` and `.specs/LESSONS.md` and skip the WRITE/READ steps. The core Specify→Design→Tasks→Execute flow is unaffected.
+This layer is additive and self-gating (no signal → no write). To turn it off for a project, delete `.kiro/lessons.json` and `.kiro/LESSONS.md` and skip the WRITE/READ steps. The core Specify→Design→Tasks→Execute flow is unaffected.
 
 ---
 

@@ -19,12 +19,12 @@ What it checks (heuristic markdown inspection, not a full parser):
   WARN   - the diagram could not be parsed confidently (cross-check skipped)
 
 Usage:
-  python3 <skill-dir>/scripts/validate_tasks.py [target] [--root DIR] [--strict]
+  python .kiro/scripts/validate_tasks.py [target] [--root DIR] [--strict]
 
   Invoke from the skill directory that ships this script (not the project root).
-  target    Path to a tasks.md, a feature directory, or a project root.
-            Omitted -> auto-detect the single feature under <root>/.specs/features/.
-  --root    Project root that contains .specs/ (default: current dir).
+  target    Path to a tasks.md or feature directory. Prefer an explicit path.
+            Omitted -> auto-detect a single tasks.md below <root>.
+  --root    Search root used only for explicit-path resolution/autodetection (default: current dir).
   --strict  Treat warnings as errors.
 
 Exit codes: 0 pass, 1 errors found (or warnings under --strict), 2 usage error.
@@ -50,26 +50,33 @@ def resolve_tasks(target, root):
             if os.path.isfile(cand):
                 return cand
             return _autodetect(target)
-        # Not a path: treat as a feature name under <root>/.specs/features/<name>/
-        cand = os.path.join(root, ".specs", "features", target, "tasks.md")
-        if os.path.isfile(cand):
-            return cand
+        matches = []
+        for dirpath, dirnames, filenames in os.walk(root):
+            dirnames[:] = [d for d in dirnames if d not in {".git", "node_modules", "references", "scripts"}]
+            if os.path.basename(dirpath) == target and "tasks.md" in filenames:
+                matches.append(os.path.join(dirpath, "tasks.md"))
+        if len(matches) == 1:
+            return matches[0]
+        if len(matches) > 1:
+            raise SystemExit("validate_tasks: multiple matching feature directories; pass an explicit tasks.md path")
         return None
     return _autodetect(root)
 
 
 def _autodetect(root):
-    base = os.path.join(root, ".specs", "features")
-    if not os.path.isdir(base):
-        return None
-    features = [d for d in sorted(os.listdir(base)) if os.path.isfile(os.path.join(base, d, "tasks.md"))]
+    features = []
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = [d for d in dirnames if d not in {".git", "node_modules", "references", "scripts"}]
+        if "tasks.md" in filenames:
+            features.append(os.path.join(dirpath, "tasks.md"))
+    features.sort()
     if len(features) == 1:
-        return os.path.join(base, features[0], "tasks.md")
+        return features[0]
     if len(features) == 0:
         return None
     raise SystemExit(
         "validate_tasks: multiple features found; pass one explicitly:\n  "
-        + "\n  ".join(os.path.join(base, f, "tasks.md") for f in features)
+        + "\n  ".join(features)
     )
 
 

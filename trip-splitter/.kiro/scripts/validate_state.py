@@ -13,17 +13,15 @@ empty, still holds the template placeholder, or has no evidence would pass a
 shallow existence check while proving nothing. This gate requires a real,
 filled verdict plus at least one file:line evidence citation.
 
-Operates only on the .specs/ markdown artifacts (stack- and tool-agnostic). No
-dependencies. Run from the project root (the dir that contains .specs), or pass
---root. Meant to be invoked by the skill as the closing gate of Execute, the
-same way lessons.py is invoked at distillation - not a manual step.
+Operates on explicit feature artifact directories (stack- and tool-agnostic). No
+fixed project storage directory is assumed. Run from the project root or pass
+--root when autodetecting.
 
 Usage:
-  python3 <skill-dir>/scripts/validate_state.py [feature]
-  python3 <skill-dir>/scripts/validate_state.py
+  python .kiro/scripts/validate_state.py [feature]
+  python .kiro/scripts/validate_state.py [feature-dir]
 
-  Invoke from the skill directory that ships this script (not the project root).
-  Pass --root when cwd is not the project that contains .specs/.
+  Invoke from the project root or pass --root when autodetecting.
 
 Exit codes: 0 ok, 1 a completed feature is missing a real PASS report,
             2 usage error.
@@ -39,14 +37,13 @@ EVIDENCE_RE = re.compile(r"[\w./-]+\.[A-Za-z0-9]+:\d+")
 
 
 def _feature_dirs(root):
-    base = os.path.join(root, ".specs", "features")
-    if not os.path.isdir(base):
-        return base, []
-    dirs = [
-        d for d in sorted(os.listdir(base))
-        if os.path.isdir(os.path.join(base, d))
-    ]
-    return base, dirs
+    """Find explicit feature artifact directories without assuming a storage folder."""
+    dirs = []
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = [d for d in dirnames if d not in {".git", "node_modules", "references", "scripts"}]
+        if "validation.md" in filenames or "tasks.md" in filenames:
+            dirs.append(dirpath)
+    return root, sorted(set(dirs))
 
 
 def _verdict(text):
@@ -116,23 +113,23 @@ def _check_feature(fdir, name):
 
 
 def _resolve(root, feature):
-    base, dirs = _feature_dirs(root)
-    if not os.path.isdir(base):
-        print(f"validate_state: no {base} directory - nothing to check.")
-        return []
+    _, dirs = _feature_dirs(root)
     if feature:
-        fdir = feature if os.path.isdir(feature) else os.path.join(base, feature)
-        if not os.path.isdir(fdir):
-            print(f"validate_state: feature not found: {feature}", file=sys.stderr)
+        fdir = feature if os.path.isdir(feature) else None
+        if fdir is None:
+            matches = [d for d in dirs if os.path.basename(d) == feature]
+            if len(matches) == 1:
+                fdir = matches[0]
+        if not fdir or not os.path.isdir(fdir):
+            print(f"validate_state: feature directory not found: {feature}", file=sys.stderr)
             raise SystemExit(2)
-        return [(fdir, os.path.basename(fdir.rstrip("/")))]
+        return [(fdir, os.path.basename(fdir.rstrip("/\\")))]
     if len(dirs) == 1:
-        return [(os.path.join(base, dirs[0]), dirs[0])]
+        return [(dirs[0], os.path.basename(dirs[0].rstrip("/\\")))]
     if not dirs:
-        print("validate_state: no features under .specs/features/ - nothing to check.")
+        print("validate_state: no feature artifact directory found - nothing to check.")
         return []
-    # Cross-check mode: only features that appear complete.
-    picked = [(os.path.join(base, d), d) for d in dirs if _appears_complete(os.path.join(base, d))]
+    picked = [(d, os.path.basename(d.rstrip("/\\"))) for d in dirs if _appears_complete(d)]
     if not picked:
         print("validate_state: no completed feature detected (all in progress) - nothing to gate.")
     return picked
@@ -141,7 +138,7 @@ def _resolve(root, feature):
 def main(argv=None):
     p = argparse.ArgumentParser(prog="validate_state.py", description="Deterministic completion gate: a done feature must have a real PASS validation report.")
     p.add_argument("feature", nargs="?", default=None, help="Feature dir or name (default: sole feature, else cross-check all completed)")
-    p.add_argument("--root", default=".", help="Project root containing .specs/ (default: current dir)")
+    p.add_argument("--root", default=".", help="Search root for explicit feature artifacts (default: current dir)")
     args = p.parse_args(argv)
     root = os.path.abspath(args.root)
 

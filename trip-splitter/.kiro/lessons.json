@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 3,
+  "next_id": 4,
   "lessons": [
     {
       "id": "L-001",
@@ -40,6 +40,24 @@
       ],
       "created": "2026-09-22T00:41:43Z",
       "last_seen": "2026-09-22T00:41:43Z"
+    },
+    {
+      "id": "L-003",
+      "key": "ac_gap::para encerrar contratos backend teste cada outcome http e cada campo de payload da spec nao apenas a implementacao ou o tamanho da colecao",
+      "text": "Para encerrar contratos backend, teste cada outcome HTTP e cada campo de payload da spec, não apenas a implementação ou o tamanho da coleção.",
+      "signal": "ac_gap",
+      "scope": "backend/routes",
+      "status": "candidate",
+      "features": [
+        "backend-conta-compartilhada"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "API-03; API-02; API-25 (backend/routes)"
+      ],
+      "created": "2026-09-22T01:08:12Z",
+      "last_seen": "2026-09-22T01:08:12Z"
     }
   ]
 }

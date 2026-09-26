@@ -21,7 +21,7 @@ The output - `context.md` - feeds directly into Design and Tasks:
 
 ### 1. Analyze the Feature
 
-Read `.specs/features/[feature]/spec.md` and identify the domain:
+Read `<feature-dir>/spec.md` and identify the domain:
 
 | Domain                         | Gray areas to explore                                         |
 | ------------------------------ | ------------------------------------------------------------- |
@@ -88,13 +88,13 @@ When user suggests scope creep: "That sounds like a separate feature. I'll note 
 
 ---
 
-## Template: `.specs/features/[feature]/context.md`
+## Template: `<feature-dir>/context.md`
 
 ```markdown
 # [Feature] Context
 
 **Gathered:** [date]
-**Spec:** `.specs/features/[feature]/spec.md`
+**Spec:** `<feature-dir>/spec.md`
 **Status:** Ready for design
 
 ---

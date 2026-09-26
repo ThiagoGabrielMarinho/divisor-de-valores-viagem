@@ -26,6 +26,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: API-20; docs/features/backend-conta-compartilhada/validation.md (backend/tests)
 - last seen: 2026-09-22T00:41:43Z
 
+### L-003 - Para encerrar contratos backend, teste cada outcome HTTP e cada campo de payload da spec, não apenas a implementação ou o tamanho da coleção.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `backend/routes` · harmful: 0
+- features: backend-conta-compartilhada
+- evidence: API-03; API-02; API-25 (backend/routes)
+- last seen: 2026-09-22T01:08:12Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

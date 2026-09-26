@@ -2,22 +2,51 @@
 
 **Goal**: Define HOW to build it. Architecture, components, what to reuse.
 
+## Product UI/UX direction
+
+For every user-facing feature, Design must treat visual quality and user experience as first-class requirements. The Trip Splitter should feel clean, clear, beautiful, trustworthy and easy to understand for a non-technical traveler.
+
+### Mandatory visual constraints
+
+- Use **light mode only**. Do not add dark mode, theme switching or dark-theme tokens unless the user explicitly changes this product decision.
+- Prefer a calm, clean visual hierarchy: clear primary action, readable typography, comfortable spacing, restrained color palette and consistent reusable components.
+- Optimize for comprehension before decoration. Every visible element should help the user understand the current state, available action or result.
+- Design mobile-first for real travel usage, then ensure the experience remains polished on tablet and desktop.
+- Treat loading, success, validation error, server error, empty state and unavailable state as part of the design, not as afterthoughts.
+- Keep language simple and friendly. Avoid technical terms, unexplained identifiers and ambiguous button labels.
+- Preserve accessibility: visible focus, sufficient contrast, keyboard reachability, adequate touch targets and meaning that does not depend on color alone.
+- Use animation sparingly and only when it improves orientation or feedback; never sacrifice speed or clarity for visual effects.
+
+### UX review gate for user-facing features
+
+Before Tasks is created, or before Execute for a feature that skips Tasks, the Design must document:
+
+1. the primary user journey and the intended next action at each step;
+2. the information hierarchy and the reason for each major UI element;
+3. all relevant loading, success, error, empty and unavailable states;
+4. the responsive behavior for mobile, tablet and desktop;
+5. accessibility considerations, including focus, contrast, labels and keyboard/touch interaction;
+6. how the light-only visual language remains consistent with existing screens.
+
+If one of these points is unknown, stop in Discuss and record the decision rather than inventing behavior during implementation.
+
+
 **Skip this phase when:** The change is straightforward - no architectural decisions, no new patterns, no component interactions to plan. For simple features, design happens inline during Execute.
 
 ## Process
 
 ### 1. Load Context
 
-Read `.specs/features/[feature]/spec.md` before designing. If `.specs/features/[feature]/context.md` exists, load it too - it contains implementation decisions that constrain the design (layout choices, behavior preferences, interaction patterns). Decisions marked as "Agent's Discretion" are yours to decide.
+Read `<feature-dir>/spec.md` before designing. If `<feature-dir>/context.md` exists, load it too - it contains implementation decisions that constrain the design (layout choices, behavior preferences, interaction patterns). Decisions marked as "Agent's Discretion" are yours to decide.
 
-**Mandatory: read `.specs/STATE.md` `## Decisions` now.** This MUST happen before any architectural choices are made. Every `active` `AD-NNN` entry is a project-level constraint this design must conform to. If a decision from a prior feature conflicts with what is best for this feature, you have two options - both require an explicit choice:
+**Mandatory: read `<project-memory-file>` `## Decisions` now.** This MUST happen before any architectural choices are made. Every `active` `AD-NNN` entry is a project-level constraint this design must conform to. If a decision from a prior feature conflicts with what is best for this feature, you have two options - both require an explicit choice:
 
 1. **Conform** - Design within the active constraint.
-2. **Supersede** - Append a new `AD-NNN` entry to `.specs/STATE.md` `## Decisions` that supersedes the old one (set the old entry's `status` to `superseded by AD-NNN`) and document the reason. The new decision becomes the project standard going forward.
+2. **Supersede** - Append a new `AD-NNN` entry to `<project-memory-file>` `## Decisions` that supersedes the old one (set the old entry's `status` to `superseded by AD-NNN`) and document the reason. The new decision becomes the project standard going forward.
 
 Silently ignoring an active decision is not an option - it creates invisible inconsistency across features.
 
-**Also load confirmed lessons** relevant to this feature: `python3 <skill-dir>/scripts/lessons.py list --status confirmed` (filter with `--scope`/`--query`). These are past verification failures distilled into guidance - apply them while designing. Load only `confirmed`. Skip silently if no store or no code tool. See [lessons.md](lessons.md).
+**Also load confirmed lessons** relevant to this feature: `python .kiro/scripts/lessons.py list --status confirmed` (filter with `--scope`/`--query`). These are past verification failures distilled into guidance - apply them while designing. Load only `confirmed`. Skip silently if no store or no code tool. See [lessons.md](lessons.md).
 
 ### 1.5. Research (Optional but Recommended)
 
@@ -65,12 +94,12 @@ If the feature involves data, define models before implementation.
 
 ---
 
-## Template: `.specs/features/[feature]/design.md`
+## Template: `<feature-dir>/design.md`
 
 ````markdown
 # [Feature] Design
 
-**Spec**: `.specs/features/[feature]/spec.md`
+**Spec**: `<feature-dir>/spec.md`
 **Status**: Draft | Approved
 
 ---
@@ -183,7 +212,7 @@ interface AnotherModel {
 | ----------------- | --------------- | ------------- |
 | [What we decided] | [What we chose] | [Why - brief] |
 
-> **Project-level decisions:** If a decision here sets a convention, pattern, or constraint that future features must follow, append it to `.specs/STATE.md` `## Decisions` as the next `AD-NNN` entry (see [memory.md](memory.md)). Feature-local decisions stay only in this table.
+> **Project-level decisions:** If a decision here sets a convention, pattern, or constraint that future features must follow, append it to `<project-memory-file>` `## Decisions` as the next `AD-NNN` entry (see [memory.md](memory.md)). Feature-local decisions stay only in this table.
 
 ---
 
