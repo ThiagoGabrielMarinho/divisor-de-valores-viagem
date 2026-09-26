@@ -133,7 +133,7 @@ T6 -> T7 -> T8
 
 ### T7: Remover o frontend legado
 
-**Status**: Proposed
+**Status**: Done — `frontend/style.css` removido; `index.html`/`app.js` legados já foram substituídos pela nova UI. A raiz agora serve a aplicação integrada.
 **What**: Remover `frontend/index.html` legado, `frontend/app.js` legado e `frontend/style.css` legado, substituídos pelos novos arquivos; confirmar que a raiz serve a aplicação integrada.
 **Where**: `frontend/style.css`
 **Depends on**: T6
