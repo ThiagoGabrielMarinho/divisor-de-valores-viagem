@@ -1,12 +1,8 @@
 # Render Blueprint — Trip Splitter
-# Sobe a API + frontend (mesmo serviço) e um PostgreSQL gerenciado.
+# Sobe a API + frontend no mesmo serviço, usando um PostgreSQL EXTERNO (Aiven).
 # No Render: New > Blueprint, aponte para este repositório. O DATABASE_URL
-# é injetado automaticamente a partir do banco definido abaixo.
-
-databases:
-  - name: trip-splitter-db
-    databaseName: trip_splitter
-    plan: free
+# NÃO fica no repositório: você o preenche no painel do Render (sync: false)
+# com a connection string do seu banco Aiven.
 
 services:
   - type: web
@@ -23,7 +19,7 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      # Preencha no painel do Render com a connection string do Aiven.
+      # sync: false mantém o segredo fora do repositório.
       - key: DATABASE_URL
-        fromDatabase:
-          name: trip-splitter-db
-          property: connectionString
+        sync: false

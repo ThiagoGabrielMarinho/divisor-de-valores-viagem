@@ -158,7 +158,7 @@ T6 -> T7 -> T8
 ### T9: Configurar deploy no Render (Blueprint + banco)
 
 **Status**: Done
-**What**: Criar `render.yaml` na raiz do repositório definindo um Web Service Node (rootDir `trip-splitter/backend`, build `npm install && npm run build`, start `npm start`) e um PostgreSQL gerenciado, com `DATABASE_URL` injetada do banco e `NODE_ENV=production`; documentar o passo a passo do deploy.
+**What**: Criar `render.yaml` na raiz do repositório definindo um Web Service Node (rootDir `trip-splitter/backend`, build `npm install --include=dev && npm run build`, start `npm start`) usando o PostgreSQL externo do Aiven, com `DATABASE_URL` informado no painel (`sync: false`, fora do repo) e `NODE_ENV=production`; documentar o passo a passo do deploy.
 **Where**: `render.yaml`, `docs/deploy-render.md`
 **Depends on**: T8
 **Requirement**: rodar frontend+backend+banco no Render
