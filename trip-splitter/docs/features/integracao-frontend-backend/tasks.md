@@ -2,7 +2,7 @@
 
 **Spec:** `docs/features/integracao-frontend-backend/spec.md`
 **Design:** `docs/features/integracao-frontend-backend/design.md`
-**Status:** Proposed — integração backend + frontend
+**Status:** Implementado — T1–T8 Done; UAT interativa na raiz pendente de execução pelo usuário
 
 ## Execution Protocol
 
@@ -145,7 +145,7 @@ T6 -> T7 -> T8
 
 ### T8: Atualizar documentação de contrato
 
-**Status**: Proposed
+**Status**: Done — `docs/api.md` documenta a derivação de obrigações no POST de despesa e o endpoint `GET /api/account/lookup`.
 **What**: Atualizar `docs/api.md` (efeito de derivação de obrigações no POST de despesa e novo endpoint de lookup) e `docs/architecture.md`/`docs/data-model.md` se necessário.
 **Where**: `docs/api.md`
 **Depends on**: T7

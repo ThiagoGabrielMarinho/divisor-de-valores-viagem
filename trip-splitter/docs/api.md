@@ -203,3 +203,11 @@ As rotas abaixo fazem parte do backend protegido da conta compartilhada. Elas us
 | POST | `/api/trips/:tripId/reset` | owner | Reset confirmado ou 409 se há concluído. |
 
 O backend protege membership por middleware e não trata UUID da viagem como autorização suficiente. A senha nunca é persistida em texto: o hash é gerado com `crypto.scrypt` nesta etapa.
+
+### Integração frontend ↔ backend (2026-09-24)
+
+**Derivação de obrigações.** `POST /api/trips/:tripId/expenses` passou a criar, na mesma transação da despesa e dos rateios, uma obrigação de cada participante devedor para o pagador, no valor do rateio (`share_cents`). O próprio pagador não gera obrigação; rateios não positivos e participantes sem `user_id` são ignorados. Falha em qualquer inserção faz rollback do conjunto (despesa + rateios + obrigações). A request e a response do endpoint não mudaram; apenas o efeito colateral de gerar obrigações passou a existir.
+
+**Busca de conta por email.** `GET /api/account/lookup?email=<email>` (sessão obrigatória) resolve email→conta para o fluxo de adicionar participante. Sucesso `200`: `{ "id": "...", "nome": "...", "email": "..." }` (nunca retorna senha/hash). Sem `email` na query: `400`. Email inexistente: `404`. Sem sessão: `401`.
+
+O frontend servido em `GET /` é a aplicação integrada (autenticação, viagens, papéis, despesas com obrigações derivadas, pagamento em duas etapas, prazos, reset e resumo global), consumindo exclusivamente `/api` com o cookie de sessão. O MVP legado por UUID foi removido.
