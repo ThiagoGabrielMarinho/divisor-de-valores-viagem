@@ -155,6 +155,31 @@ T6 -> T7 -> T8
 **Done when**: a documentação reflete a derivação de obrigações e o endpoint de lookup.
 **Commit**: `docs(api): document obligation derivation and lookup`
 
+### T9: Configurar deploy no Render (Blueprint + banco)
+
+**Status**: Done
+**What**: Criar `render.yaml` na raiz do repositório definindo um Web Service Node (rootDir `trip-splitter/backend`, build `npm install && npm run build`, start `npm start`) e um PostgreSQL gerenciado, com `DATABASE_URL` injetada do banco e `NODE_ENV=production`; documentar o passo a passo do deploy.
+**Where**: `render.yaml`, `docs/deploy-render.md`
+**Depends on**: T8
+**Requirement**: rodar frontend+backend+banco no Render
+**Tests**: `npm run build` local (paridade de build) e revisão do blueprint; verificação de que o caminho do frontend resolve em produção
+**Gate**: `npm run build`
+**Done when**: o blueprint sobe API + frontend no mesmo serviço com banco gerenciado, sem credencial hardcoded, e o passo a passo está documentado.
+**Commit**: `chore(deploy): add render blueprint and guide`
+
+### T10: Garantir paridade de produção (SSL, porta, estático)
+
+**Status**: Done
+**What**: Confirmar/ajustar que o backend funciona em produção: `PORT` do ambiente, SSL gerenciado no `db/index.ts`, cookie `Secure` sob `NODE_ENV=production`, migração idempotente no boot e caminho do frontend estático relativo ao `dist`.
+**Where**: `backend/src/app.ts`
+**Depends on**: T9
+**Requirement**: paridade local ↔ Render
+**Tests**: `npm run build`; revisão dos pontos de produção
+**Gate**: `npm run build`
+**Done when**: nenhum ponto do boot depende de configuração local; tudo vem do ambiente do Render.
+**Commit**: `chore(deploy): add render blueprint and guide`
+**Nota**: os itens desta task já estavam corretos no código (PORT via env, SSL gerenciado, cookie Secure em produção, migração no boot, caminho estático relativo). Verificado sem alteração de código; entregue junto de T9.
+
 ## Task Integrity Rules
 
 - Cada `Where` aponta um deliverable coeso; arquivos não coesos exigem dividir a task.

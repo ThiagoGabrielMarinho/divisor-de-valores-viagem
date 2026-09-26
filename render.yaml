@@ -1,0 +1,29 @@
+# Render Blueprint — Trip Splitter
+# Sobe a API + frontend (mesmo serviço) e um PostgreSQL gerenciado.
+# No Render: New > Blueprint, aponte para este repositório. O DATABASE_URL
+# é injetado automaticamente a partir do banco definido abaixo.
+
+databases:
+  - name: trip-splitter-db
+    databaseName: trip_splitter
+    plan: free
+
+services:
+  - type: web
+    name: trip-splitter
+    runtime: node
+    plan: free
+    # O código do projeto está na subpasta trip-splitter/backend.
+    rootDir: trip-splitter/backend
+    # --include=dev garante que typescript/ts-node (devDependencies) sejam
+    # instalados mesmo com NODE_ENV=production, senão o build tsc falha.
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: trip-splitter-db
+          property: connectionString
